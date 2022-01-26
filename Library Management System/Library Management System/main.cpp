@@ -3,7 +3,6 @@
 #include <filesystem>
 #include <string>
 #include <vector>
-
 #include "book_indexing.h"
 
 using namespace std;
@@ -112,7 +111,7 @@ int main() {
 
 //DISCLAIMER searchByTitle is not tested yet!
 vector <book_indexing> searchByTitle(string query) {
-    string base_path = "./index_files/alphabetical/";
+    string base_path = (filesystem::current_path().string() + "/index_files/alphabetical/");
     char index_filename = 'A';
 
     ifstream indexFile;
@@ -121,7 +120,7 @@ vector <book_indexing> searchByTitle(string query) {
     string line;
 
     while (index_filename <= 'Z') { //loop until reach Z.txt
-        indexFile.open(base_path + to_string(index_filename++) + ".txt");
+        indexFile.open(filesystem::path (base_path + index_filename++ + ".txt"));
         if (indexFile.is_open()) {
             while (getline(indexFile, line)) {
                 if (line.length() > 0) {
@@ -135,5 +134,5 @@ vector <book_indexing> searchByTitle(string query) {
             }
         }
     }
-    return searchResult; //return vector searchResult when result is not empty
+    return searchResult; //return vector
 }
