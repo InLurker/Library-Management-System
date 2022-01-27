@@ -68,7 +68,7 @@ int main() {
                         
                         if (selectionNum == 1) {
                             int select = 0;
-                            cout << "This is the only available title. \nEnter 1 to confirm this search. If not, enter an integer other than 1: ";
+                            cout << "This is the only title available. \nEnter 1 to confirm this search. If not, enter an integer other than 1: ";
                             cin >> select;
                             book_indexing* selection = &searchResult.at(selectionNum - 1);
                             switch (select) {
