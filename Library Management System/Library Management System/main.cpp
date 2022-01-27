@@ -65,22 +65,37 @@ int main() {
 
                         for (book_indexing entry : searchResult)
                             cout << ++selectionNum << ". " << entry.title << endl;
-
-                        cout << "Select an entry [1-" + to_string(selectionNum) + "]: ";
-                        cin >> selectionNum;
-
-                        book_indexing* selection = &searchResult.at(selectionNum - 1);
                         
-                        //placeholder value for if statement comparison
-                        int select = 0;
-                        //if the user's selectionNum is within the range of (1 to selectionNum)
-                        //logic for condition inside if statement is wrong, needs to be fixed
-                        if (select>=1 && select<=selectionNum) {
-                            cout << "Title: " << selection->title << endl;
+                        if (selectionNum == 1) {
+                            int select = 0;
+                            cout << "This is the only available title. \nEnter 1 to confirm this search. If not, enter an integer other than 1: ";
+                            cin >> select;
+                            book_indexing* selection = &searchResult.at(selectionNum - 1);
+                            switch (select) {
+                            case 1:
+                                cout << "Selected title: " << selection->title << endl;
+                                break;
+                            default:
+                                cout<< "Book title not selected." << endl;
+                                break;
+                            }
+                        }else if (selectionNum > 1) {
+                            int select = 0;
+                            cout << "Select an entry [1-" + to_string(selectionNum) + "]: ";
+                            cin >> select;
+                            if (select > selectionNum || select < 1) {
+                                cout << "Not a valid input. Try again." << endl;
+                                break;
+                            }
+                            book_indexing* selection = &searchResult.at(select - 1);
+                            if(select<=selectionNum) {
+                                cout << "Selected title: " << selection->title << endl;
+                            }
                         }
-                        else {//if the user's selectionNum is not within the range
+                        else {
                             cout << "Book title not found." << endl;
                         }
+                        
                         //for future implementation: user's numerical (title) input that gets mistaken as ISBN when outputted
                     }
                     else {
