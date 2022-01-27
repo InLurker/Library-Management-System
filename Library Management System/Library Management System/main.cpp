@@ -68,7 +68,7 @@ int main() {
                         
                         if (selectionNum == 1) {
                             char select;
-                            cout << "Only 1 title retrieved. Proceed with search request [Y/N]? ";
+                            cout << "Only 1 title retrieved. Proceed with search result [Y/N]? ";
                             cin >> select;
                             book_indexing* selection = &searchResult.at(selectionNum - 1);
                             switch (select) {
