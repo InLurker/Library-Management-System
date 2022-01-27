@@ -67,16 +67,25 @@ int main() {
                             cout << ++selectionNum << ". " << entry.title << endl;
                         
                         if (selectionNum == 1) {
-                            int select = 0;
-                            cout << "This is the only title available. \nEnter 1 to confirm this search. If not, enter an integer other than 1: ";
+                            char select;
+                            cout << "Only 1 title retrieved. Proceed with search request [Y/N]? ";
                             cin >> select;
                             book_indexing* selection = &searchResult.at(selectionNum - 1);
                             switch (select) {
-                            case 1:
+                            case 'Y':
                                 cout << "Selected title: " << selection->title << endl;
                                 break;
+                            case 'N':
+                                cout << "Book title not selected." << endl;
+                                break;
+                            case 'y':
+                                cout << "Inputs are case sensitive. Try again." << endl;
+                                break;
+                            case 'n':
+                                cout << "Inputs are case sensitive. Try again." << endl;
+                                break;
                             default:
-                                cout<< "Book title not selected." << endl;
+                                cout << "Not a valid input. Try again." << endl;
                                 break;
                             }
                         }else if (selectionNum > 1) {
