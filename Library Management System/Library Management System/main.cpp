@@ -3,11 +3,12 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+#include "IndexSearching.h"
 #include "book_indexing.h"
 
 using namespace std;
 
-vector <book_indexing> searchByTitle(string query); //forward declarations
+void getBookData(string ISBN);
 
 int main() {
     //initial setup
@@ -42,9 +43,9 @@ int main() {
             while (option != 6) {
                 cout << "\nSearch book by:" << endl;
                 cout << "1. Title" << endl;
-                cout << "2. Publisher" << endl;
-                cout << "3. Author" << endl;
-                cout << "4. Genre" << endl;
+                cout << "2. Author" << endl;
+                cout << "3. Genre" << endl;
+                cout << "4. Publisher" << endl;
                 cout << "5. ISBN" << endl;
                 cout << "6. Cancel" << endl;
                 cout << "Select an option: ";
@@ -52,10 +53,11 @@ int main() {
 
                 int selectionNum = 0; //initialized to 0
 
+                string search_query;
+
                 switch (option) {
                 case 1: {
                     cout << "\nSearch a title: ";
-                    string search_query;
                     cin.ignore();
                     getline(cin, search_query); //promt user to input search query
                     vector <book_indexing> searchResult = searchByTitle(search_query);
@@ -63,57 +65,146 @@ int main() {
                     if (!searchResult.empty()) {
                         cout << "\nSearch result for \"" + search_query + "\": " << endl;
 
-                        for (book_indexing entry : searchResult)
-                            cout << ++selectionNum << ". " << entry.title << endl;
-                        
-                        if (selectionNum == 1) {
-                            char select;
-                            cout << "Only 1 title retrieved. Proceed with search result [Y/N]? ";
+                        for (book_indexing& book : searchResult) //output search result
+                            cout << ++selectionNum << ". " << book.title << endl;
+
+                        if (selectionNum == 1) { //when only 1 title matches query
+                            string select;
+
+                            cout << "\nOnly 1 title matches your query." << endl;
+                            cout << "Is this the book you're looking for? [Y/N]: ";
                             cin >> select;
-                            book_indexing* selection = &searchResult.at(selectionNum - 1);
-                            switch (select) {
-                            case 'Y':
-                                cout << "Selected title: " << selection->title << endl;
-                                break;
-                            case 'N':
-                                cout << "Book title not selected." << endl;
-                                break;
-                            case 'y':
-                                cout << "Inputs are case sensitive. Try again." << endl;
-                                break;
-                            case 'n':
-                                cout << "Inputs are case sensitive. Try again." << endl;
-                                break;
-                            default:
-                                cout << "Not a valid input. Try again." << endl;
-                                break;
+
+                            select = toUpperCase(select);
+                            if (select == "Y" || select == "YES") {
+                                book_indexing* book_selection = &searchResult.at(0);
+                                cout << "Selected title: " << book_selection->title << endl;
                             }
-                        }else if (selectionNum > 1) {
+                            else if (select == "N" || select == "NO") {
+                                cout << "Book title not selected." << endl;
+                            }
+                            else {
+                                cout << "Not a valid input. Try again." << endl;
+                            }
+                        }
+                        else if (selectionNum > 1) {
                             int select = 0;
+
                             cout << "Select an entry [1-" + to_string(selectionNum) + "]: ";
                             cin >> select;
-                            if (select > selectionNum || select < 1) {
+
+                            if (select > 0 && select <= selectionNum) {
+                                book_indexing* book_selection = &searchResult.at(select - 1);
+                                cout << "Selected title: " << book_selection->title << endl;
+                                //getBookDataFromISBN(book_selection->ISBN);
+                            }
+                            else {
                                 cout << "Not a valid input. Try again." << endl;
-                                break;
-                            }
-                            book_indexing* selection = &searchResult.at(select - 1);
-                            if(select<=selectionNum) {
-                                cout << "Selected title: " << selection->title << endl;
                             }
                         }
-                        else {
-                            cout << "Book title not found." << endl;
-                        }
-                        
-                        //for future implementation: user's numerical (title) input that gets mistaken as ISBN when outputted
                     }
                     else {
                         cout << "Book title not found." << endl;
                     }
-                    break;
                 }
-                case 2:
-                    break;
+                      break;
+                case 2: {
+                    cout << "\nSearch an author: ";
+                    cin.ignore();
+                    getline(cin, search_query); //promt user to input search query
+                    vector <string> searchResult = searchIndexFiles("author", search_query);
+
+                    if (!searchResult.empty()) {
+                        cout << "\nSearch result for \"" + search_query + "\": " << endl;
+
+                        for (string author : searchResult) {
+                            cout << ++selectionNum << ". " << author << endl;
+                        }
+                        string author;
+                        if (selectionNum == 1) { //when only 1 title matches query
+                            string select;
+
+                            cout << "\nOnly 1 author matches your query." << endl;
+                            cout << "Is this the author you're looking for? [Y/N]: ";
+                            cin >> select;
+
+                            select = toUpperCase(select);
+                            if (select == "Y" || select == "YES") {
+                                author = searchResult.at(0);
+                            }
+                            else if (select == "N" || select == "NO") {
+                                cout << "Author not selected." << endl;
+                            }
+                            else {
+                                cout << "Not a valid input. Try again." << endl;
+                            }
+                        }
+                        else if (selectionNum > 1) {
+                            int select = 0;
+
+                            cout << "Select an entry [1-" + to_string(selectionNum) + "]: ";
+                            cin >> select;
+
+                            if (select > 0 && select <= selectionNum) {
+                                author = searchResult.at(select - 1);
+                            }
+                            else {
+                                cout << "Not a valid input. Try again." << endl;
+                            }
+                        }
+
+                        if (!author.empty()) {
+                            int selectionNum = 0;
+
+                            cout << '\n' << author << "'s books:" << endl;
+                            vector <book_indexing> authorBooks = getBookList("author", author);
+
+                            for (book_indexing& book : authorBooks) {
+                                cout << ++selectionNum << ". " << book.title << endl;
+                            }
+
+                            if (selectionNum == 1) { //when author only has 1 book
+                                string select;
+
+                                cout << '\n' << author << " only has 1 book." << endl;
+                                cout << "Is this the book you're looking for? [Y/N]: ";
+                                cin >> select;
+
+                                select = toUpperCase(select);
+                                if (select == "Y" || select == "YES") {
+                                    book_indexing* book_selection = &authorBooks.at(0);
+                                    cout << "Selected title: " << book_selection->title << endl;
+                                    //getBookDataFromISBN(book_selection->ISBN);
+                                }
+                                else if (select == "N" || select == "NO") {
+                                    cout << "Book title not selected." << endl;
+                                }
+                                else {
+                                    cout << "Not a valid input. Try again." << endl;
+                                }
+                            }
+                            else if (selectionNum > 1) {
+                                int select = 0;
+
+                                cout << "Select an entry [1-" + to_string(selectionNum) + "]: ";
+                                cin >> select;
+
+                                if (select > 0 && select <= selectionNum) {
+                                    book_indexing* book_selection = &authorBooks.at(select - 1);
+                                    cout << "Selected title: " << book_selection->title << endl;
+                                    //getBookDataFromISBN(book_selection->ISBN);
+                                }
+                                else {
+                                    cout << "Not a valid input. Try again." << endl;
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        cout << "Author not found." << endl;
+                    }
+                }
+                      break;
                 case 3:
                     break;
                 case 4:
@@ -145,30 +236,7 @@ int main() {
 
 }
 
-//DISCLAIMER searchByTitle is not tested yet!
-vector <book_indexing> searchByTitle(string query) {
-    string base_path = (filesystem::current_path().string() + "/index_files/alphabetical/");
-    char index_filename = 'A';
+void getBookDataFromISBN(string ISBN) {
+    //To be implemented
 
-    ifstream indexFile;
-
-    vector <book_indexing> searchResult; //vector list container for search results
-    string line;
-
-    while (index_filename <= 'Z') { //loop until reach Z.txt
-        indexFile.open(filesystem::path (base_path + index_filename++ + ".txt"));
-        if (indexFile.is_open()) {
-            while (getline(indexFile, line)) {
-                if (line.length() > 0) {
-                    if (line.find(query) != string::npos) { //if the query is contained in a line
-                        book_indexing* entry = new book_indexing;
-                        entry->title = line;
-                        getline(indexFile, entry->ISBN);
-                        searchResult.push_back(*entry); //insert entry to searchResult list
-                    }
-                }
-            }
-        }
-    }
-    return searchResult; //return vector
 }

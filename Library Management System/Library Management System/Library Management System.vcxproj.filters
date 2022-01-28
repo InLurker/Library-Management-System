@@ -18,9 +18,15 @@
     <ClInclude Include="book_indexing.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="IndexSearching.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexSearching.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
