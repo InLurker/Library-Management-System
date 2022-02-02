@@ -252,7 +252,7 @@ int main() {
                             }
                             if (selectionNum == 1) {
                                 string select;
-                                cout << '\n' << "There is only 1 book in the " << genre << " genre." << endl;
+                                cout << '\n' << "Only 1 book in the " << genre << " genre." << endl;
                                 cout << "Is this the book you're looking for? [Y/N]: ";
                                 cin >> select;
                                 select = toUpperCase(select);
