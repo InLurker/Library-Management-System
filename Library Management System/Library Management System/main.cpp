@@ -275,7 +275,6 @@ int main() {
                                 cin >> select;
 
                                 if (select > 0 && select <= selectionNum) {
-                                    //.at: extract title result at user's specified search result number (from 1 to max #)
                                     book_indexing* book_selection = &genreBooks.at(select - 1);
                                     cout << "Selected title: " << book_selection->title << endl;
                                     //getBookDataFromISBN(book_selection->ISBN); (not yet implemented still in progress)
