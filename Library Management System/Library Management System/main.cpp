@@ -205,7 +205,91 @@ int main() {
                     }
                 }
                       break;
-                case 3:
+                case 3: {
+                    cout << "\nSearch by genre: ";
+                    cin.ignore();
+                    getline(cin, search_query);
+                    vector <string> searchResult = searchIndexFiles("genre", search_query);
+                    if (!searchResult.empty()) {
+                        cout << "\nSearch result for \"" + search_query + "\": " << endl;
+                        for (string genre : searchResult) {
+                            cout << ++selectionNum << ". " << genre << endl;
+                        }
+                        string genre;
+                        if (selectionNum == 1) {
+                            string select;
+                            cout << "Only 1 genre matches your query." << endl;
+                            cout << "Is this the genre you're looking for? [Y/N]: ";
+                            cin >> select;
+                            select = toUpperCase(select);
+                            if (select == "Y" || select == "YES") {
+                                genre = searchResult.at(0);
+                            }
+                            else if (select == "N" || select == "NO") {
+                                cout << "Genre not selected." << endl;
+                            }
+                            else {
+                                cout << "Not a valid input. Try again." << endl;
+                            }
+                        }
+                        else if (selectionNum > 1) {
+                            int select = 0;
+                            cout << "Select an entry [1-" + to_string(selectionNum) + "]: ";
+                            cin >> select;
+                            if (select > 0 && select <= selectionNum) {
+                                genre = searchResult.at(select - 1);
+                            }
+                            else {
+                                cout << "Not a valid input. Try again." << endl;
+                            }
+                        }
+                        if (!genre.empty()) {
+                            int selectionNum = 0;
+                            cout << '\n' << genre <<" books: " << endl;
+                            vector <book_indexing> genreBooks = getBookList("genre", genre);
+                            for (book_indexing& book : genreBooks) {
+                                cout << ++selectionNum << ". " << book.title << endl;
+                            }
+                            if (selectionNum == 1) {
+                                string select;
+                                cout << '\n' << "There is only 1 book in the " << genre << " genre." << endl;
+                                cout << "Is this the book you're looking for? [Y/N]: ";
+                                cin >> select;
+                                select = toUpperCase(select);
+                                if (select == "Y" || select == "YES") {
+                                    book_indexing* book_selection = &genreBooks.at(0);
+                                    cout << "Selected title: " << book_selection->title << endl;
+                                    //getBookDataFromISBN(book_selection->ISBN); (not yet implemented still in progress)
+                                }
+                                else if (select == "N" || select == "NO") {
+                                    cout << "Book title not selected." << endl;
+                                }
+                                else {
+                                    cout << "Not a valid input. Try again." << endl;
+                                }
+                            }
+                            else if (selectionNum > 1) {
+                                int select = 0;
+
+                                cout << "Select an entry [1-" + to_string(selectionNum) + "]: ";
+                                cin >> select;
+
+                                if (select > 0 && select <= selectionNum) {
+                                    //.at: extract title result at user's specified search result number (from 1 to max #)
+                                    book_indexing* book_selection = &genreBooks.at(select - 1);
+                                    cout << "Selected title: " << book_selection->title << endl;
+                                    //getBookDataFromISBN(book_selection->ISBN); (not yet implemented still in progress)
+                                }
+                                else {
+                                    cout << "Not a valid input. Try again." << endl;
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        cout << "Genre not found." << endl;
+                    }
+                }
                     break;
                 case 4:
                     break;
