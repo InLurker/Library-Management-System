@@ -290,7 +290,90 @@ int main() {
                     }
                 }
                     break;
-                case 4:
+                case 4: {
+                    cout << "\nSearch by publisher: ";
+                    cin.ignore();
+                    getline(cin, search_query);
+                    vector <string> searchResult = searchIndexFiles("publisher", search_query);
+                    if (!searchResult.empty()) {
+                        cout << "\nSearch result for \"" + search_query + "\": " << endl;
+                        for (string publisher : searchResult) {
+                            cout << ++selectionNum << ". " << publisher << endl;
+                        }
+                        string publisher;
+                        if (selectionNum == 1) {
+                            string select;
+                            cout << "Only 1 publisher matches your query." << endl;
+                            cout << "Is this the publisher you're looking for? [Y/N]: ";
+                            cin >> select;
+                            select = toUpperCase(select);
+                            if (select == "Y" || select == "YES") {
+                                publisher = searchResult.at(0);
+                            }
+                            else if (select == "N" || select == "NO") {
+                                cout << "Publisher not selected." << endl;
+                            }
+                            else {
+                                cout << "Not a valid input. Try again." << endl;
+                            }
+                        }
+                        else if (selectionNum > 1) {
+                            int select = 0;
+                            cout << "Select an entry [1-" + to_string(selectionNum) + "]: ";
+                            cin >> select;
+                            if (select > 0 && select <= selectionNum) {
+                                publisher = searchResult.at(select - 1);
+                            }
+                            else {
+                                cout << "Not a valid input. Try again." << endl;
+                            }
+                        }
+                        if (!publisher.empty()) {
+                            int selectionNum = 0;
+                            cout << '\n' << publisher << "'s books:" << endl;
+                            vector <book_indexing> publisherBooks = getBookList("publisher", publisher);
+                            for (book_indexing& book : publisherBooks) {
+                                cout << ++selectionNum << ". " << book.title << endl;
+                            }
+                            if (selectionNum == 1) {
+                                string select;
+                                cout << '\n' << "Only 1 book published by " << publisher << "." << endl;
+                                cout << "Is this the book you're looking for? [Y/N]: ";
+                                cin >> select;
+                                select = toUpperCase(select);
+                                if (select == "Y" || select == "YES") {
+                                    book_indexing* book_selection = &publisherBooks.at(0);
+                                    cout << "Selected title: " << book_selection->title << endl;
+                                    //getBookDataFromISBN(book_selection->ISBN); (not yet implemented still in progress)
+                                }
+                                else if (select == "N" || select == "NO") {
+                                    cout << "Book title not selected." << endl;
+                                }
+                                else {
+                                    cout << "Not a valid input. Try again." << endl;
+                                }
+                            }
+                            else if (selectionNum > 1) {
+                                int select = 0;
+
+                                cout << "Select an entry [1-" + to_string(selectionNum) + "]: ";
+                                cin >> select;
+
+                                if (select > 0 && select <= selectionNum) {
+                                    book_indexing* book_selection = &publisherBooks.at(select - 1);
+                                    cout << "Selected title: " << book_selection->title << endl;
+                                    //getBookDataFromISBN(book_selection->ISBN); (not yet implemented still in progress)
+                                }
+                                else {
+                                    cout << "Not a valid input. Try again." << endl;
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        cout << "Publisher not found." << endl;
+                    }
+                }
                     break;
                 case 5:
                     break;
