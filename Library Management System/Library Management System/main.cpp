@@ -375,59 +375,9 @@ int main() {
                     }
                 }
                     break;
-                case 5: {
-                    cout << "\nSearch by ISBN: ";
-                    cin.ignore();
-                    getline(cin, search_query);
-                    vector <string> searchResult = searchDataFiles(search_query);
-                    if (!searchResult.empty()) {
-                        cout << "\nSearch result for \"" + search_query + "\": " << endl;
-                        for (string isbn : searchResult) {
-                            cout << ++selectionNum << ". " << isbn << endl;
-                        }
-                        string isbn;
-                        if (selectionNum == 1) {
-                            string select;
-                            cout << "Only 1 ISBN matches your query." << endl;
-                            cout << "Is this the ISBN you're looking for? [Y/N]: ";
-                            cin >> select;
-                            select = toUpperCase(select);
-                            if (select == "Y" || select == "YES") {
-                                isbn = searchResult.at(0);
-                            }
-                            else if (select == "N" || select == "NO") {
-                                cout << "ISBN not selected." << endl;
-                            }
-                            else {
-                                cout << "Not a valid input. Try again." << endl;
-                            }
-                        }
-                        else if (selectionNum > 1) {
-                            int select = 0;
-                            cout << "Select an entry [1-" + to_string(selectionNum) + "]: ";
-                            cin >> select;
-                            if (select > 0 && select <= selectionNum) {
-                                isbn = searchResult.at(select - 1);
-                            }
-                            else {
-                                cout << "Not a valid input. Try again." << endl;
-                            }
-                        }
-                        if (!isbn.empty()) {
-                            int selectionNum = 0;
-                            cout << '\n' << "Book details: " << endl;
-                            vector <book_indexing> isbnBooks = getDataList(isbn);
-                            book_indexing* book_selection = &isbnBooks.at(0);
-                            cout << book_selection->title << "\n"<<book_selection->author<<"\n"<<book_selection->publisher<<"\n"<<book_selection->genre<<endl;
-                        }
-                    }
-                    else {
-                       cout << "ISBN not found." << endl;
-                    }
-                }
+                case 5:
                     break;
                 case 6:
-                    cout << "Request cancelled." << endl;
                     break;
                 default:
                     cout << "Invalid input!" << endl;
