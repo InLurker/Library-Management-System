@@ -5,10 +5,13 @@
 #include <vector>
 #include "IndexSearching.h"
 #include "book_indexing.h"
+#include "Data.h"
+#include "Book.h"
 
 using namespace std;
 
-void getBookData(string ISBN);
+void printBookData(const book &Book);
+string number_clear_formatting(const string text);
 
 int main() {
     //initial setup
@@ -33,6 +36,8 @@ int main() {
         cout << "3. Return a book" << endl;
         cout << "4. Borrow a book" << endl;
         cout << "5. Reserve a book" << endl;
+        cout << "6. Adminstrator mode" << endl;
+        cout << "7. Exit" << endl;
         cout << "Select an action: ";
         cin >> action;
 
@@ -54,6 +59,7 @@ int main() {
                 int selectionNum = 0; //initialized to 0
 
                 string search_query;
+                book BookData;
 
                 switch (option) {
                 case 1: {
@@ -78,7 +84,7 @@ int main() {
                             select = toUpperCase(select);
                             if (select == "Y" || select == "YES") {
                                 book_indexing* book_selection = &searchResult.at(0);
-                                cout << "Selected title: " << book_selection->title << endl;
+                                BookData = getDataList(book_selection->ISBN);
                             }
                             else if (select == "N" || select == "NO") {
                                 cout << "Book title not selected." << endl;
@@ -95,8 +101,7 @@ int main() {
 
                             if (select > 0 && select <= selectionNum) {
                                 book_indexing* book_selection = &searchResult.at(select - 1);
-                                cout << "Selected title: " << book_selection->title << endl;
-                                //getBookDataFromISBN(book_selection->ISBN);
+                                BookData = getDataList(book_selection->ISBN);
                             }
                             else {
                                 cout << "Not a valid input. Try again." << endl;
@@ -173,8 +178,7 @@ int main() {
                                 select = toUpperCase(select);
                                 if (select == "Y" || select == "YES") {
                                     book_indexing* book_selection = &authorBooks.at(0);
-                                    cout << "Selected title: " << book_selection->title << endl;
-                                    //getBookDataFromISBN(book_selection->ISBN);
+                                    BookData = getDataList(book_selection->ISBN);
                                 }
                                 else if (select == "N" || select == "NO") {
                                     cout << "Book title not selected." << endl;
@@ -191,8 +195,7 @@ int main() {
 
                                 if (select > 0 && select <= selectionNum) {
                                     book_indexing* book_selection = &authorBooks.at(select - 1);
-                                    cout << "Selected title: " << book_selection->title << endl;
-                                    //getBookDataFromISBN(book_selection->ISBN);
+                                    BookData = getDataList(book_selection->ISBN);
                                 }
                                 else {
                                     cout << "Not a valid input. Try again." << endl;
@@ -258,8 +261,7 @@ int main() {
                                 select = toUpperCase(select);
                                 if (select == "Y" || select == "YES") {
                                     book_indexing* book_selection = &genreBooks.at(0);
-                                    cout << "Selected title: " << book_selection->title << endl;
-                                    //getBookDataFromISBN(book_selection->ISBN); (not yet implemented still in progress)
+                                    BookData = getDataList(book_selection->ISBN);
                                 }
                                 else if (select == "N" || select == "NO") {
                                     cout << "Book title not selected." << endl;
@@ -276,8 +278,7 @@ int main() {
 
                                 if (select > 0 && select <= selectionNum) {
                                     book_indexing* book_selection = &genreBooks.at(select - 1);
-                                    cout << "Selected title: " << book_selection->title << endl;
-                                    //getBookDataFromISBN(book_selection->ISBN); (not yet implemented still in progress)
+                                    BookData = getDataList(book_selection->ISBN);
                                 }
                                 else {
                                     cout << "Not a valid input. Try again." << endl;
@@ -343,8 +344,7 @@ int main() {
                                 select = toUpperCase(select);
                                 if (select == "Y" || select == "YES") {
                                     book_indexing* book_selection = &publisherBooks.at(0);
-                                    cout << "Selected title: " << book_selection->title << endl;
-                                    //getBookDataFromISBN(book_selection->ISBN); (not yet implemented still in progress)
+                                    BookData = getDataList(book_selection->ISBN);
                                 }
                                 else if (select == "N" || select == "NO") {
                                     cout << "Book title not selected." << endl;
@@ -361,8 +361,7 @@ int main() {
 
                                 if (select > 0 && select <= selectionNum) {
                                     book_indexing* book_selection = &publisherBooks.at(select - 1);
-                                    cout << "Selected title: " << book_selection->title << endl;
-                                    //getBookDataFromISBN(book_selection->ISBN); (not yet implemented still in progress)
+                                    BookData = getDataList(book_selection->ISBN);
                                 }
                                 else {
                                     cout << "Not a valid input. Try again." << endl;
@@ -376,11 +375,28 @@ int main() {
                 }
                     break;
                 case 5:
+                    cout << "Input ISBN number: ";
+                    cin.ignore();
+                    getline(cin, search_query);
+                    if (!search_query.empty()) {
+                        search_query = number_clear_formatting(search_query);
+                        if (is_number(search_query)) {
+                            BookData = getDataList(search_query);
+                            if (BookData.title.empty()) {
+                                cout << "Book doesn't exist in our database." << endl;
+                            }
+                        }
+                        else cout << "Not a valid ISBN number." << endl;
+                    }
                     break;
                 case 6:
                     break;
                 default:
                     cout << "Invalid input!" << endl;
+                }
+                if (!BookData.title.empty()) {
+                    cout << '\n';
+                    printBookData(BookData);
                 }
             }
             break;
@@ -391,6 +407,10 @@ int main() {
         case 4:
             break;
         case 5:
+            break;
+        case 6:
+            break;
+        case 7:
             return 0;
             break;
         default:
@@ -399,10 +419,29 @@ int main() {
 
     }
 
-
 }
 
-void getBookDataFromISBN(string ISBN) {
-    //To be implemented
+void printBookData(const book& Book) {
+    cout << "ISBN: " << Book.ISBN << endl;
+    cout << "Title: " << Book.title << endl;
+    cout << "Author: " << Book.author << endl;
+    cout << "Genre: " << Book.genre << endl;
+    cout << "Publisher: " << Book.publisher << endl;
+    cout << "Status: " << Book.status << endl;
+    cout << "Borrower Record: " << endl;
+    if (!Book.borrower_record.empty()) {
+        for (string borrower : Book.borrower_record) {
+            cout << borrower << endl;
+        }
+    }
+}
 
+string number_clear_formatting(const string text) {
+    string returnString;
+    for (char letter : text) {
+        if (letter != '-' && letter != ' ') {
+            returnString += letter;
+        }
+    }
+    return returnString;
 }

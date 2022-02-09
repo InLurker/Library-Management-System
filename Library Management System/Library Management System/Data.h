@@ -1,12 +1,15 @@
 #pragma once
 #ifndef DATA_H
 #define DATA_H
+
 #include<vector>
 #include<string>
 #include<filesystem>
 #include<fstream>
-#include"book_indexing.h"
+#include"Book.h"
+
 using namespace std;
-vector<string>searchDataFiles(string query);
-vector <book_indexing> getDataList(string filename);
+
+book getDataList(string filename);
+
 #endif
