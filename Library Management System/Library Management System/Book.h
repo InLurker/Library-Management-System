@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include <filesystem>
 
 class book {
 public:
@@ -14,7 +15,14 @@ public:
     std::string publisher;
     std::string status;
     std::vector <std::string> borrower_record;
-    void updateData();
+    void addToDatabase();
+    void borrowBook(std::string name, std::string phoneNum);
+    void reserveBook(std::string name, std::string phoneNum);
+    void returnBook();
+    void modifyBorrower(int rowIndex, std::string name, std::string phoneNum);
+    void deleteBorrower(int rowIndex);
+    void modifyDetails(std::string detailType, std::string newDetail);
+    void deleteBook();
 };
 
 #endif

@@ -401,6 +401,61 @@ int main() {
             }
             break;
         case 2:
+        {
+            string bookDetails;
+            cout << "\nEnter Book Details." << endl;
+            cout << "ISBN: ";
+            cin.ignore();
+            getline(cin, bookDetails);
+            bookDetails = number_clear_formatting(bookDetails);
+            if (is_number(bookDetails)) {
+                if (!filesystem::exists("./data/" + bookDetails + ".txt")) {
+                    book newBook;
+                    newBook.ISBN = bookDetails;
+
+                    cout << "Title: ";
+                    getline(cin, bookDetails);
+                    newBook.title = bookDetails;
+
+                    cout << "Author: ";
+                    getline(cin, bookDetails);
+                    newBook.author = bookDetails;
+
+                    cout << "Genre: ";
+                    getline(cin, bookDetails);
+                    newBook.genre = bookDetails;
+
+                    cout << "Publisher: ";
+                    getline(cin, bookDetails);
+                    newBook.publisher = bookDetails;
+
+                    newBook.status = "available";
+
+                    newBook.addToDatabase();
+                }
+                else {
+                    cout << "Book already existed." << endl;
+                    string select;
+                    cout << "Override previous entry?[Y/N]";
+                    cin >> select;
+                    select = toUpperCase(select);
+                    if (select == "Y" || select == "YES") {
+                        if (filesystem::remove("./data/" + bookDetails + ".txt"))
+                            cout << "Book removed success" << endl;
+                    }
+                    else if (select == "N" || select == "NO") {
+                        cout << "Book not inserted." << endl;
+                    }
+                    else {
+                        cout << "Not a valid input. Try again." << endl;
+                    }
+
+                }
+            }
+            else {
+                cout << "Not a valid ISBN number." << endl;
+            }
+        }
             break;
         case 3:
             break;
