@@ -403,53 +403,57 @@ int main() {
         case 2:
         {
             string bookDetails;
-            cout << "\nEnter Book Details." << endl;
+            cout << "\nEnter book details." << endl;
             cout << "ISBN: ";
             cin.ignore();
             getline(cin, bookDetails);
             bookDetails = number_clear_formatting(bookDetails);
             if (is_number(bookDetails)) {
-                if (!filesystem::exists("./data/" + bookDetails + ".txt")) {
-                    book newBook;
-                    newBook.ISBN = bookDetails;
-
-                    cout << "Title: ";
-                    getline(cin, bookDetails);
-                    newBook.title = bookDetails;
-
-                    cout << "Author: ";
-                    getline(cin, bookDetails);
-                    newBook.author = bookDetails;
-
-                    cout << "Genre: ";
-                    getline(cin, bookDetails);
-                    newBook.genre = bookDetails;
-
-                    cout << "Publisher: ";
-                    getline(cin, bookDetails);
-                    newBook.publisher = bookDetails;
-
-                    newBook.status = "available";
-
-                    newBook.addToDatabase(bookDetails);
-                }
-                else {
+                if (filesystem::exists("./data/" + bookDetails + ".txt")) { //if txt file of the same ISBN exist in database
                     cout << "Book already existed." << endl;
                     string select;
-                    cout << "Override previous entry?[Y/N]";
+                    cout << "Override previous entry?[Y/N]: ";
                     cin >> select;
                     select = toUpperCase(select);
                     if (select == "Y" || select == "YES") {
                         if (filesystem::remove("./data/" + bookDetails + ".txt"))
-                            cout << "Book removed success" << endl;
+                            cout << "Insert new details:" << endl;
                     }
                     else if (select == "N" || select == "NO") {
                         cout << "Book not inserted." << endl;
+                        break;
                     }
                     else {
                         cout << "Not a valid input. Try again." << endl;
+                        break;
                     }
+                }
+                book newBook;
+                newBook.ISBN = bookDetails;
 
+                cout << "Title: ";
+                cin.ignore();
+                getline(cin, bookDetails);
+                newBook.title = bookDetails;
+
+                cout << "Author: ";
+                getline(cin, bookDetails);
+                newBook.author = bookDetails;
+
+                cout << "Genre: ";
+                getline(cin, bookDetails);
+                newBook.genre = bookDetails;
+
+                cout << "Publisher: ";
+                getline(cin, bookDetails);
+                newBook.publisher = bookDetails;
+
+                newBook.status = "available";
+
+                newBook.addToDatabase();
+
+                if (filesystem::exists("./data/" + newBook.ISBN + ".txt")) {
+                    cout << "Book successfully inserted." << endl;
                 }
             }
             else {
