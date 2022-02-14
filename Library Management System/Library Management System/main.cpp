@@ -448,7 +448,7 @@ int main() {
                 getline(cin, bookDetails);
                 newBook.publisher = bookDetails;
 
-                newBook.status = "available";
+                newBook.status = "Available";
 
                 newBook.addToDatabase();
 

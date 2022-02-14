@@ -1,14 +1,16 @@
 #include "Book.h"
 
 void book::addToDatabase() {
-	std::string base_path = (std::filesystem::current_path().string() + "/data/" + ISBN + ".txt");
+	std::string base_path = ("./data/" + ISBN + ".txt");
 	std::ofstream textfile;
 	std::string line;
 	textfile.open(std::filesystem::path(base_path),std::ios::out|std::ios::app);
 	if (textfile.is_open()) {
 		textfile << title << '\n' << author << '\n' << genre << '\n' << publisher << '\n' << status;
 	}
-	//indexing files updating to be added
+	//indexing files updating
+	base_path = "./index_files/";
+	textfile.open(std::filesystem::path(base_path + "alphabetical"));
 }
 void book::borrowBook(std::string name, std::string phoneNum) {
 }

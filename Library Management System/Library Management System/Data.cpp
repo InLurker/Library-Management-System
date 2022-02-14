@@ -1,7 +1,7 @@
 #include "Data.h"
 
 book getDataList(string filename) {
-	std::string base_path = (filesystem::current_path().string() + "/data/" + filename + ".txt");
+	std::string base_path = ("./data/" + filename + ".txt");
 	std::ifstream textfile;
 	textfile.open(filesystem::path(base_path));
 	book returnBook;

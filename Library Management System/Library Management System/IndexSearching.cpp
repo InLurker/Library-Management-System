@@ -1,7 +1,7 @@
 #include "IndexSearching.h"
 
 std::vector <book_indexing> searchByTitle(std::string query) {
-    std::string base_path = (std::filesystem::current_path().string() + "/index_files/alphabetical/");
+    std::string base_path = ("./index_files/alphabetical/");
 
     std::ifstream indexFile;
 
@@ -46,7 +46,7 @@ std::vector <book_indexing> searchByTitle(std::string query) {
 }
 
 std::vector<std::string> searchIndexFiles(const std::string searchType, std::string query) {
-    std::string base_path = (std::filesystem::current_path().string() + "/index_files/" + searchType + "/");
+    std::string base_path = ("./index_files/" + searchType + "/");
 
     std::vector<std::string> searchResult; //vector list container for search results
 
@@ -63,7 +63,7 @@ std::vector<std::string> searchIndexFiles(const std::string searchType, std::str
 }
 
 std::vector<std::string> getIndexFiles(const std::string searchType) {
-    std::string base_path = (std::filesystem::current_path().string() + "/index_files/" + searchType + "/");
+    std::string base_path = ("./index_files/" + searchType + "/");
 
     std::vector<std::string> filename_list; //container for list of filenames
 
@@ -76,7 +76,7 @@ std::vector<std::string> getIndexFiles(const std::string searchType) {
 }
 
 std::vector<book_indexing> getBookList(const std::string searchType, std::string filename) {
-    std::string base_path = (std::filesystem::current_path().string() + "/index_files/" + searchType + "/" + filename + ".txt");
+    std::string base_path = ("./index_files/" + searchType + "/" + filename + ".txt");
 
     std::ifstream textfile;
     textfile.open(std::filesystem::path(base_path));
