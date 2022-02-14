@@ -1,11 +1,10 @@
 #include "Book.h"
-#include "Data.h"
 
 void book::addToDatabase() {
-	std::string base_path = (filesystem::current_path().string() + "/data/" + ISBN + ".txt");
+	std::string base_path = (std::filesystem::current_path().string() + "/data/" + ISBN + ".txt");
 	std::ofstream textfile;
 	std::string line;
-	textfile.open(filesystem::path(base_path),std::ios::out|std::ios::app);
+	textfile.open(std::filesystem::path(base_path),std::ios::out|std::ios::app);
 	if (textfile.is_open()) {
 		textfile << title << '\n' << author << '\n' << genre << '\n' << publisher << '\n' << status;
 	}
