@@ -7,32 +7,24 @@ book getDataList(string filename) {
 	book returnBook;
 	std::string line;
 	if (textfile.is_open()) {
-		while (getline(textfile, line)) {
+		getline(textfile, line);
 			if (!line.empty()) {
-				if (line[0] == '+') {
-					line = line.substr(1, line.size() - 1);
-					book* entry = new book;
-
-					entry->ISBN = filename;
-
-					entry->title = line;
-					getline(textfile, line);
-					line = line.substr(1, line.size() - 1);
-					entry->author = line;
-					getline(textfile, line);
-					line = line.substr(1, line.size() - 1);
-					entry->publisher = line;
-					getline(textfile, line);
-					line = line.substr(1, line.size() - 1);
-					entry->genre = line;
-					//borrower's record not yet implemented
-					if (!entry->title.empty() && !entry->author.empty() && !entry->publisher.empty() && !entry->genre.empty()) {
-						returnBook = *entry;
-					}
+				book* entry = new book;
+				entry->ISBN = filename;
+				entry->title = line;
+				getline(textfile, line); 
+				entry->author = line;
+				getline(textfile, line);
+				entry->publisher = line;
+				getline(textfile, line);
+				entry->genre = line;
+				while (getline(textfile, line)) {
+					entry->borrower_record.push_back(line);
 				}
-
+				if (!entry->title.empty()&&!entry->author.empty()&&!entry->publisher.empty()&&!entry->genre.empty()) {
+					returnBook = *entry;
+				}
 			}
-		}
 	}
 	return returnBook;
 }
