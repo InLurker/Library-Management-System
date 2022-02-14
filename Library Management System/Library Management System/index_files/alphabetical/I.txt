@@ -1,4 +1,4 @@
-+Introduction to Java Programming, 10th Edition
--9780133761313
-+It
--9780670813025
+Introduction to Java Programming, 10th Edition
+9780133761313
+It
+9780670813025

@@ -18,8 +18,11 @@ book getDataList(string filename) {
 				entry->publisher = line;
 				getline(textfile, line);
 				entry->genre = line;
+				getline(textfile, line);
+				entry->status = line;
 				while (getline(textfile, line)) {
-					entry->borrower_record.push_back(line);
+					if (line != "\n")
+						entry->borrower_record.push_back(line);
 				}
 				if (!entry->title.empty()&&!entry->author.empty()&&!entry->publisher.empty()&&!entry->genre.empty()) {
 					returnBook = *entry;

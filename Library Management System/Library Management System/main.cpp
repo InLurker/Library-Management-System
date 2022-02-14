@@ -12,6 +12,7 @@ using namespace std;
 
 void printBookData(const book &Book);
 string number_clear_formatting(const string text);
+bool is_number(const string str);
 
 int main() {
     //initial setup
@@ -209,24 +210,20 @@ int main() {
                 }
                       break;
                 case 3: {
-                    cout << "\nSearch by genre: ";
-                    cin.ignore();
-                    getline(cin, search_query);
-                    vector <string> searchResult = searchIndexFiles("genre", search_query);
-                    if (!searchResult.empty()) {
-                        cout << "\nSearch result for \"" + search_query + "\": " << endl;
-                        for (string genre : searchResult) {
-                            cout << ++selectionNum << ". " << genre << endl;
-                        }
-                        string genre;
-                        if (selectionNum == 1) {
+                    vector <string> genreList = getIndexFiles("genre");
+                    string genre;
+
+                    if (!genreList.empty()) {
+                        if (genreList.size() == 1) { //when only 1 title matches query
                             string select;
-                            cout << "Only 1 genre matches your query." << endl;
+
+                            cout << "\nOnly 1 genre available." << endl;
                             cout << "Is this the genre you're looking for? [Y/N]: ";
                             cin >> select;
+
                             select = toUpperCase(select);
                             if (select == "Y" || select == "YES") {
-                                genre = searchResult.at(0);
+                                genre = genreList.at(0);
                             }
                             else if (select == "N" || select == "NO") {
                                 cout << "Genre not selected." << endl;
@@ -235,29 +232,43 @@ int main() {
                                 cout << "Not a valid input. Try again." << endl;
                             }
                         }
-                        else if (selectionNum > 1) {
+                        else if (genreList.size() > 1) {
+
+                            cout << "\nList of available genres: " << endl;
+
+                            for (string genreEntries : genreList) {
+                                cout << ++selectionNum << ". " << genreEntries << endl;
+                            }
+
                             int select = 0;
-                            cout << "Select an entry [1-" + to_string(selectionNum) + "]: ";
+                            cout << "Select a genre [1-" + to_string(selectionNum) + "]: ";
                             cin >> select;
+
                             if (select > 0 && select <= selectionNum) {
-                                genre = searchResult.at(select - 1);
+                                genre = genreList.at(select - 1);
                             }
                             else {
                                 cout << "Not a valid input. Try again." << endl;
                             }
                         }
+
                         if (!genre.empty()) {
                             int selectionNum = 0;
-                            cout << '\n' << genre <<" books: " << endl;
+
+                            cout << '\n' << "Books under " << '\"' << genre << '\"' << " genre:" << endl;
                             vector <book_indexing> genreBooks = getBookList("genre", genre);
+
                             for (book_indexing& book : genreBooks) {
                                 cout << ++selectionNum << ". " << book.title << endl;
                             }
-                            if (selectionNum == 1) {
+
+                            if (selectionNum == 1) { //when author only has 1 book
                                 string select;
-                                cout << '\n' << "Only 1 book in the " << genre << " genre." << endl;
+
+                                cout << '\n' << "Genre \"" << genre << "\" only has 1 book." << endl;
                                 cout << "Is this the book you're looking for? [Y/N]: ";
                                 cin >> select;
+
                                 select = toUpperCase(select);
                                 if (select == "Y" || select == "YES") {
                                     book_indexing* book_selection = &genreBooks.at(0);
@@ -287,7 +298,7 @@ int main() {
                         }
                     }
                     else {
-                        cout << "Genre not found." << endl;
+                        cout << "No genre available." << endl;
                     }
                 }
                     break;
@@ -417,7 +428,7 @@ int main() {
                     select = toUpperCase(select);
                     if (select == "Y" || select == "YES") {
                         if (filesystem::remove("./data/" + bookDetails + ".txt"))
-                            cout << "Insert new details:" << endl;
+                            cout << "Insert new details." << endl;
                     }
                     else if (select == "N" || select == "NO") {
                         cout << "Book not inserted." << endl;
@@ -427,12 +438,12 @@ int main() {
                         cout << "Not a valid input. Try again." << endl;
                         break;
                     }
+                    cin.ignore();
                 }
                 book newBook;
                 newBook.ISBN = bookDetails;
 
                 cout << "Title: ";
-                cin.ignore();
                 getline(cin, bookDetails);
                 newBook.title = bookDetails;
 
@@ -503,4 +514,8 @@ string number_clear_formatting(const string text) {
         }
     }
     return returnString;
+}
+
+bool is_number(const std::string str) {
+    return !str.empty() && std::all_of(str.begin(), str.end(), ::isdigit);
 }

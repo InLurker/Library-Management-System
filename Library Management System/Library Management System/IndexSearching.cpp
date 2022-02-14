@@ -11,36 +11,28 @@ std::vector <book_indexing> searchByTitle(std::string query) {
     query = toUpperCase(query);
 
     for (const std::filesystem::directory_entry &textfiles: std::filesystem::directory_iterator(base_path)) { //get all txt files in directory
-        indexFile.open(textfiles.path());
+        indexFile.open(textfiles.path(), std::ifstream::in);
         if (indexFile.is_open()) {
             while (std::getline(indexFile, line)) {
                 if (!line.empty()) {
-                    if (line[0] == '+') {
-                        line = line.substr(1, line.size() - 1);
+                    if (toUpperCase(line).find(query) != std::string::npos) {//if the query is contained in line
 
-                        if (toUpperCase(line).find(query) != std::string::npos) {//if the query is contained in line
+                        book_indexing* entry = new book_indexing;
+                        entry->title = line;
 
-                            book_indexing* entry = new book_indexing;
-                            entry->title = line;
-
-                            std::getline(indexFile, line); //get next line
-
-                            if (!line.empty()) {
-                                if (line[0] == '-') {
-                                    line = line.substr(1, line.size() - 1);
-                                    if (is_number(line)) //if line is a number
-                                        entry->ISBN = line;
-                                }
-                            }
-
-                            if (!entry->title.empty() && !entry->ISBN.empty()) {
-                                searchResult.push_back(*entry); //add entry to searchResult
-                            }
+                        std::getline(indexFile, line); //get next line
+                        if (!line.empty()) {
+                            entry->ISBN = line;
+                            searchResult.push_back(*entry); //add entry to searchResult
                         }
+                    }
+                    else {
+                        indexFile.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     }
                 }
             }
         }
+        indexFile.close();
     }
     return searchResult; //return vector
 }
@@ -79,7 +71,7 @@ std::vector<book_indexing> getBookList(const std::string searchType, std::string
     std::string base_path = ("./index_files/" + searchType + "/" + filename + ".txt");
 
     std::ifstream textfile;
-    textfile.open(std::filesystem::path(base_path));
+    textfile.open(std::filesystem::path(base_path), std::ifstream::in);
 
     std::vector <book_indexing> bookList;
 
@@ -87,28 +79,19 @@ std::vector<book_indexing> getBookList(const std::string searchType, std::string
     if (textfile.is_open()) {
         while (std::getline(textfile, line)) {
             if (!line.empty()) {
-                if (line[0] == '+') {
-                    line = line.substr(1, line.size() - 1);
-                    book_indexing* entry = new book_indexing;
-                    entry->title = line;
+                book_indexing* entry = new book_indexing;
+                entry->title = line;
 
-                    std::getline(textfile, line); //get next line
+                std::getline(textfile, line); //get next line
 
-                    if (!line.empty()) {
-                        if (line[0] == '-') {
-                            line = line.substr(1, line.size() - 1);
-                            if (is_number(line)) //if line is a number
-                                entry->ISBN = line;
-                        }
-                    }
-                    if (!entry->title.empty() && !entry->ISBN.empty()) {
-                        bookList.push_back(*entry); //add entry to searchResult
-                    }
+                if (!line.empty()) {
+                    entry->ISBN = line;
+                    bookList.push_back(*entry); //add entry to searchResult
                 }
-
             }
         }
     }
+    textfile.close();
     return bookList;
 }
 
@@ -117,8 +100,4 @@ std::string toUpperCase(const std::string text) {
     for (char letter : text)
         returnString += toupper(letter);
     return returnString;
-}
-
-bool is_number(const std::string str) {
-    return !str.empty() && std::all_of(str.begin(), str.end(), ::isdigit);
 }

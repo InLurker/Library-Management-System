@@ -15,6 +15,5 @@ std::vector <std::string> getIndexFiles(const std::string searchType); //get all
 std::vector <book_indexing> getBookList(const std::string searchType, std::string filename); //get book list from a known index file
 
 std::string toUpperCase(std::string text);
-bool is_number(std::string str);
 
 #endif 
