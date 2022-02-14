@@ -1,8 +1,19 @@
 #include "Book.h"
-
-void book::addToDatabase() {
+#include "Data.h"
+#pragma warning(disable:4996)
+void book::addToDatabase(std::string filename) {
+	std::string base_path = (filesystem::current_path().string() + "/data/" + filename + ".txt");
+	std::ofstream textfile;
+	std::string line;
+	textfile.open(filesystem::path(base_path),std::ios::out|std::ios::app);
+	if (textfile.fail()) {
+		throw std::ios_base::failure(strerror(errno));
+	}
+	textfile.exceptions(textfile.exceptions() | std::ios::failbit | std::ifstream::badbit);
+	book* entry = new book;
+	entry->ISBN = filename;//where the issues start
+	//push book data into text files, not yet implemented
 }
-
 void book::borrowBook(std::string name, std::string phoneNum) {
 }
 
