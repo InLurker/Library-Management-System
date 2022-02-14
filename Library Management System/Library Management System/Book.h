@@ -15,7 +15,7 @@ public:
     std::string publisher;
     std::string status;
     std::vector <std::string> borrower_record;
-    void addToDatabase();
+    void addToDatabase(std::string filename);
     void borrowBook(std::string name, std::string phoneNum);
     void reserveBook(std::string name, std::string phoneNum);
     void returnBook();
