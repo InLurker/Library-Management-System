@@ -431,7 +431,7 @@ int main() {
 
                     newBook.status = "available";
 
-                    newBook.addToDatabase();
+                    newBook.addToDatabase(bookDetails);
                 }
                 else {
                     cout << "Book already existed." << endl;
