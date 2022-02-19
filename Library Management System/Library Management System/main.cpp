@@ -11,8 +11,8 @@
 using namespace std;
 
 void printBookData(const book &Book);
-string number_clear_formatting(const string text);
-bool is_number(const string str);
+string number_clear_formatting(const string& text);
+bool is_number(const string& str);
 
 int main() {
     //initial setup
@@ -42,10 +42,11 @@ int main() {
         cout << "Select an action: ";
         cin >> action;
 
-        int option = 0; // initialized to 0
+        
 
         switch (action) {
-        case 1:
+        case 1: {
+            int option = 0;
             while (option != 6) {
                 cout << "\nSearch book by:" << endl;
                 cout << "1. Title" << endl;
@@ -301,7 +302,7 @@ int main() {
                         cout << "No genre available." << endl;
                     }
                 }
-                    break;
+                      break;
                 case 4: {
                     cout << "\nSearch by publisher: ";
                     cin.ignore();
@@ -384,8 +385,8 @@ int main() {
                         cout << "Publisher not found." << endl;
                     }
                 }
-                    break;
-                case 5:
+                      break;
+                case 5: {
                     cout << "Input ISBN number: ";
                     cin.ignore();
                     getline(cin, search_query);
@@ -399,7 +400,8 @@ int main() {
                         }
                         else cout << "Not a valid ISBN number." << endl;
                     }
-                    break;
+                }
+                      break;
                 case 6:
                     break;
                 default:
@@ -410,9 +412,9 @@ int main() {
                     printBookData(BookData);
                 }
             }
+        }
             break;
-        case 2:
-        {
+        case 2: {
             string bookDetails;
             cout << "\nEnter book details." << endl;
             cout << "ISBN: ";
@@ -478,7 +480,120 @@ int main() {
             break;
         case 5:
             break;
-        case 6:
+        case 6: {
+            int option = 0;
+            while (option != 7) {
+                cout << "\nAdministrator Mode:" << endl;
+                cout << "1. Insert a book" << endl;
+                cout << "2. Modify a book" << endl;
+                cout << "3. Delete a book" << endl;
+                cout << "4. Modify a borrower" << endl;
+                cout << "5. Delete a borrower" << endl;
+                cout << "6. Search a borrowing list" << endl;
+                cout << "7. Exit Administrator Mode" << endl;
+                cout << "Select an option: ";
+                cin >> option;
+
+                switch (option) {
+                case 1: {
+                    string bookDetails;
+                    cout << "\nEnter book details." << endl;
+                    cout << "ISBN: ";
+                    cin.ignore();
+                    getline(cin, bookDetails);
+                    bookDetails = number_clear_formatting(bookDetails);
+                    if (is_number(bookDetails)) {
+                        if (filesystem::exists("./data/" + bookDetails + ".txt")) { //if txt file of the same ISBN exist in database
+                            cout << "Book already existed." << endl;
+                            string select;
+                            cout << "Override previous entry?[Y/N]: ";
+                            cin >> select;
+                            select = toUpperCase(select);
+                            if (select == "Y" || select == "YES") {
+                                if (filesystem::remove("./data/" + bookDetails + ".txt"))
+                                    cout << "Insert new details." << endl;
+                            }
+                            else if (select == "N" || select == "NO") {
+                                cout << "Book not inserted." << endl;
+                                break;
+                            }
+                            else {
+                                cout << "Not a valid input. Try again." << endl;
+                                break;
+                            }
+                            cin.ignore();
+                        }
+                        book newBook;
+                        newBook.ISBN = bookDetails;
+
+                        cout << "Title: ";
+                        getline(cin, bookDetails);
+                        newBook.title = bookDetails;
+
+                        cout << "Author: ";
+                        getline(cin, bookDetails);
+                        newBook.author = bookDetails;
+
+                        cout << "Genre: ";
+                        getline(cin, bookDetails);
+                        newBook.genre = bookDetails;
+
+                        cout << "Publisher: ";
+                        getline(cin, bookDetails);
+                        newBook.publisher = bookDetails;
+
+                        newBook.status = "Available";
+
+                        newBook.addToDatabase();
+
+                        if (filesystem::exists("./data/" + newBook.ISBN + ".txt")) {
+                            cout << "Book successfully inserted." << endl;
+                        }
+                    }
+                    else {
+                        cout << "Not a valid ISBN number." << endl;
+                    }
+                }
+                    break;
+                case 2:
+                    break;
+                case 3: {
+                    string toDelete;
+                    cout << "\nInput ISBN number: ";
+                    cin.ignore();
+                    getline(cin, toDelete);
+
+                    if (!toDelete.empty()) {
+                        toDelete = number_clear_formatting(toDelete);
+                        if (is_number(toDelete)) {
+                            book BookData = getDataList(toDelete);
+
+                            if (!BookData.title.empty()) {
+                                BookData.deleteBook();
+                                if (!filesystem::exists("./data/" + toDelete + ".txt"))
+                                    cout << "Book successfully deleted." << endl;
+                                else
+                                    cout << "Book failed to delete." << endl;
+                            }
+                            else cout << "Book doesn't exist in our database." << endl;
+                        }
+                        else cout << "Not a valid ISBN number." << endl;
+                    }
+                }
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    break;
+                default:
+                    break;
+                }
+            }
+        }
             break;
         case 7:
             return 0;
@@ -506,7 +621,7 @@ void printBookData(const book& Book) {
     }
 }
 
-string number_clear_formatting(const string text) {
+string number_clear_formatting(const string& text) {
     string returnString;
     for (char letter : text) {
         if (letter != '-' && letter != ' ') {
@@ -516,6 +631,6 @@ string number_clear_formatting(const string text) {
     return returnString;
 }
 
-bool is_number(const std::string str) {
+bool is_number(const std::string& str) {
     return !str.empty() && std::all_of(str.begin(), str.end(), ::isdigit);
 }
