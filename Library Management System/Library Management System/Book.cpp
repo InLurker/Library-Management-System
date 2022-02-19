@@ -12,6 +12,7 @@ void book::addToDatabase() {
 		textfile.close();
 	}
 
+	//indexing files paths
 	std::string pathnames[4] = {
 		"alphabetical/" + std::string(1, toupper(title[0])),
 		"author/" + author,
@@ -73,9 +74,12 @@ void book::modifyDetails(std::string detailType, std::string newDetail) {
 }
 
 void book::deleteBook() {
+	//delete entry from database
 	std::filesystem::remove("./data/" + ISBN + ".txt");
 
-	//delete indexing entries in index_files to be added
+	//delete indexing entries
+
+	//indexing files paths
 	std::string pathnames[4] = {
 		"alphabetical/" + std::string(1, toupper(title[0])),
 		"author/" + author,
@@ -95,7 +99,7 @@ void book::deleteBook() {
 			entries.push_back(line);
 			while (std::getline(indexfile, line)) {
 				if (!removed) {
-					if (ISBN == line) {
+					if (ISBN == line) { //when isbn match, remove book from list
 						entries.pop_back();
 						removed = true;
 						continue;

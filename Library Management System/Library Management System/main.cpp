@@ -570,7 +570,7 @@ int main() {
 
                             if (!BookData.title.empty()) {
                                 BookData.deleteBook();
-                                if (!filesystem::exists("./data/" + toDelete + ".txt"))
+                                if (!filesystem::exists("./data/" + toDelete + ".txt")) //if data no longer exist
                                     cout << "Book successfully deleted." << endl;
                                 else
                                     cout << "Book failed to delete." << endl;
