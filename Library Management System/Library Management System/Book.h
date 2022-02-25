@@ -17,13 +17,18 @@ public:
     std::string status;
     std::vector <std::string> borrower_record;
     void addToDatabase();
-    void borrowBook(std::string name, std::string phoneNum);
-    void reserveBook(std::string name, std::string phoneNum);
+    void borrowBook(const std::string& name, const std::string& phoneNum);
+    void reserveBook(const std::string& name, const std::string& phoneNum);
     void returnBook();
     void modifyBorrower(int rowIndex, std::string name, std::string phoneNum);
     void deleteBorrower(int rowIndex);
     void modifyDetails(std::string detailType, std::string newDetail);
-    void deleteBook();
+    void deleteBook(); 
+private:
+    std::string reserveName;
+    
 };
+
+
 
 #endif

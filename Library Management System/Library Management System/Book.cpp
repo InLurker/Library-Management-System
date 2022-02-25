@@ -55,13 +55,74 @@ void book::addToDatabase() {
 	}
 }
 
-void book::borrowBook(std::string name, std::string phoneNum) {
+void book::borrowBook(const std::string& name, const std::string& phoneNum) {
+	status = "Borrowed";
+	borrower_record.push_back(name + " - " + phoneNum);
+
+	std::string base_path = ("./data/" + ISBN + ".txt");
+	std::fstream textfile;
+	std::string line;
+	textfile.open(std::filesystem::path(base_path), std::ios::out | std::ios::trunc);
+	
+	//update book details
+	if (textfile.is_open()) {
+		textfile << title << '\n' << author << '\n' << publisher << '\n' << genre << '\n' << status << '\n';
+		
+		//insert borrower's list
+		for(const std::string& borrower : borrower_record){
+			textfile << borrower << std::endl;
+		}
+	}
+	textfile.close();
 }
 
-void book::reserveBook(std::string name, std::string phoneNum) {
+void book::reserveBook(const std::string& name, const std::string& phoneNum) {
+	status = "Reserved";
+
+	reserveName = name + " - " + phoneNum;
+
+	std::string base_path = ("./data/" + ISBN + ".txt");
+	std::fstream textfile;
+	std::string line;
+	textfile.open(std::filesystem::path(base_path), std::ios::out | std::ios::trunc);
+
+	//update book details
+	if (textfile.is_open()) {
+		textfile << title << '\n' << author << '\n' << publisher << '\n' << genre << '\n' << status << '\n';
+
+		//insert borrower's list
+		for (const std::string& borrower : borrower_record) {
+			textfile << borrower << std::endl;
+		}
+		textfile << "+" << reserveName << std::endl;
+	}
+	textfile.close();
 }
 
 void book::returnBook() {
+	if (status == "Borrowed") {
+		status = "Available";
+	}
+	else if (status == "Reserved") {
+		status = "Borrowed";
+		borrower_record.push_back(reserveName);
+		reserveName.clear();
+	}
+	std::string base_path = ("./data/" + ISBN + ".txt");
+	std::fstream textfile;
+	std::string line;
+	textfile.open(std::filesystem::path(base_path), std::ios::out | std::ios::trunc);
+
+	//update book details
+	if (textfile.is_open()) {
+		textfile << title << '\n' << author << '\n' << publisher << '\n' << genre << '\n' << status << '\n';
+
+		//insert borrower's list
+		for (const std::string& borrower : borrower_record) {
+			textfile << borrower << std::endl;
+		}
+	}
+	textfile.close();
 }
 
 void book::modifyBorrower(int rowIndex, std::string name, std::string phoneNum) {

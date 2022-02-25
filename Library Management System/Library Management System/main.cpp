@@ -474,11 +474,101 @@ int main() {
             }
         }
             break;
-        case 3:
+        case 3: {
+            string search_query;
+            string bookDetails;
+            book BookData;
+            cout << "\nISBN: ";
+            cin.ignore();
+            getline(cin, search_query);
+            if (!search_query.empty()) {
+                search_query = number_clear_formatting(search_query);
+                if (is_number(search_query)) {
+                    BookData = getDataList(search_query);
+                    if (BookData.title.empty()) {
+                        cout << "Book doesn't exist in the database." << endl;
+                    }
+                    else {
+                        if (BookData.status != "Available") {
+                            BookData.returnBook();
+                            cout << "Book successfully returned" << endl;
+                        }
+                        else {
+                            cout << "Book is not Borrowed" << endl;
+                        }
+                    }
+                }
+                else cout << "Not a valid ISBN number." << endl;
+            }
+        }
             break;
-        case 4:
+        case 4: {
+            string search_query;
+            string bookDetails;
+            book BookData;
+            cout << "\nISBN: ";
+            cin.ignore();
+            getline(cin, search_query);
+            if (!search_query.empty()) {
+                search_query = number_clear_formatting(search_query);
+                if (is_number(search_query)) {
+                    BookData = getDataList(search_query);
+                    if (BookData.title.empty()) {
+                        cout << "Book doesn't exist in the database." << endl;
+                    }
+                    else {
+                        if(BookData.status == "Available") {
+                            string name, phoneNum;
+                            cout << "Name: ";
+                            getline(cin, name);
+                            cout << "Phone Number: ";
+                            getline(cin, phoneNum);
+                            BookData.borrowBook(name, phoneNum);
+                            cout << "Book successfully borrowed" << endl;
+                        }
+                        else {
+                            cout << "Book is not available" << endl;
+                        }
+                    }
+                }
+                else cout << "Not a valid ISBN number." << endl;
+            }
+
+        }
             break;
-        case 5:
+        case 5: {
+            string search_query;
+            string bookDetails;
+            book BookData;
+            cout << "\nISBN: ";
+            cin.ignore();
+            getline(cin, search_query);
+            if (!search_query.empty()) {
+                search_query = number_clear_formatting(search_query);
+                if (is_number(search_query)) {
+                    BookData = getDataList(search_query);
+                    if (BookData.title.empty()) {
+                        cout << "Book doesn't exist in the database." << endl;
+                    }
+                    else {
+                        if (BookData.status == "Borrowed") {
+                            string name, phoneNum;
+                            cout << "Name: ";
+                            getline(cin, name);
+                            cout << "Phone Number: ";
+                            getline(cin, phoneNum);
+                            BookData.reserveBook(name, phoneNum);
+                            cout << "Book successfully reserved" << endl;
+                        }
+                        else if (BookData.status == "Reserved") {
+                            cout << "Book is already reserved." << endl;
+                        }
+                        else cout << "Book is available to borrow." << endl;
+                    }
+                }
+                else cout << "Not a valid ISBN number." << endl;
+            }
+        }
             break;
         case 6: {
             int option = 0;
