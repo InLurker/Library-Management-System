@@ -16,6 +16,7 @@ public:
     std::string publisher;
     std::string status;
     std::vector <std::string> borrower_record;
+    std::string reserveName;
     void addToDatabase();
     void borrowBook(const std::string& name, const std::string& phoneNum);
     void reserveBook(const std::string& name, const std::string& phoneNum);
@@ -25,10 +26,6 @@ public:
     void modifyDetails(std::string detailType, std::string newDetail);
     void deleteBook(); 
 private:
-    std::string reserveName;
-    
+    void updateDetails();
 };
-
-
-
 #endif

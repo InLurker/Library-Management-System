@@ -8,8 +8,6 @@
 #include<fstream>
 #include"Book.h"
 
-using namespace std;
-
-book getDataList(string filename);
+book getDataList(const std::string& filename);
 
 #endif

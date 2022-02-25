@@ -11,9 +11,8 @@ void book::addToDatabase() {
 		textfile << title << '\n' << author << '\n' << publisher << '\n' << genre << '\n' << status << '\n';
 		textfile.close();
 	}
-
-	//indexing files paths
-	std::string pathnames[4] = {
+	
+	std::string pathnames[4] = { //indexing files paths
 		"alphabetical/" + std::string(1, toupper(title[0])),
 		"author/" + author,
 		"genre/" + genre,
@@ -59,21 +58,7 @@ void book::borrowBook(const std::string& name, const std::string& phoneNum) {
 	status = "Borrowed";
 	borrower_record.push_back(name + " - " + phoneNum);
 
-	std::string base_path = ("./data/" + ISBN + ".txt");
-	std::fstream textfile;
-	std::string line;
-	textfile.open(std::filesystem::path(base_path), std::ios::out | std::ios::trunc);
-	
-	//update book details
-	if (textfile.is_open()) {
-		textfile << title << '\n' << author << '\n' << publisher << '\n' << genre << '\n' << status << '\n';
-		
-		//insert borrower's list
-		for(const std::string& borrower : borrower_record){
-			textfile << borrower << std::endl;
-		}
-	}
-	textfile.close();
+	this->updateDetails();
 }
 
 void book::reserveBook(const std::string& name, const std::string& phoneNum) {
@@ -81,22 +66,7 @@ void book::reserveBook(const std::string& name, const std::string& phoneNum) {
 
 	reserveName = name + " - " + phoneNum;
 
-	std::string base_path = ("./data/" + ISBN + ".txt");
-	std::fstream textfile;
-	std::string line;
-	textfile.open(std::filesystem::path(base_path), std::ios::out | std::ios::trunc);
-
-	//update book details
-	if (textfile.is_open()) {
-		textfile << title << '\n' << author << '\n' << publisher << '\n' << genre << '\n' << status << '\n';
-
-		//insert borrower's list
-		for (const std::string& borrower : borrower_record) {
-			textfile << borrower << std::endl;
-		}
-		textfile << "+" << reserveName << std::endl;
-	}
-	textfile.close();
+	this->updateDetails();
 }
 
 void book::returnBook() {
@@ -108,21 +78,7 @@ void book::returnBook() {
 		borrower_record.push_back(reserveName);
 		reserveName.clear();
 	}
-	std::string base_path = ("./data/" + ISBN + ".txt");
-	std::fstream textfile;
-	std::string line;
-	textfile.open(std::filesystem::path(base_path), std::ios::out | std::ios::trunc);
-
-	//update book details
-	if (textfile.is_open()) {
-		textfile << title << '\n' << author << '\n' << publisher << '\n' << genre << '\n' << status << '\n';
-
-		//insert borrower's list
-		for (const std::string& borrower : borrower_record) {
-			textfile << borrower << std::endl;
-		}
-	}
-	textfile.close();
+	this->updateDetails();
 }
 
 void book::modifyBorrower(int rowIndex, std::string name, std::string phoneNum) {
@@ -137,11 +93,9 @@ void book::modifyDetails(std::string detailType, std::string newDetail) {
 void book::deleteBook() {
 	//delete entry from database
 	std::filesystem::remove("./data/" + ISBN + ".txt");
-
+	
 	//delete indexing entries
-
-	//indexing files paths
-	std::string pathnames[4] = {
+	std::string pathnames[4] = { //indexing files paths
 		"alphabetical/" + std::string(1, toupper(title[0])),
 		"author/" + author,
 		"genre/" + genre,
@@ -187,3 +141,26 @@ void book::deleteBook() {
 	}
 
 }
+
+void book::updateDetails() {
+	std::string base_path = ("./data/" + ISBN + ".txt");
+	std::fstream textfile;
+	std::string line;
+	textfile.open(std::filesystem::path(base_path), std::ios::out | std::ios::trunc);
+
+	//update book details
+	if (textfile.is_open()) {
+		textfile << title << '\n' << author << '\n' << publisher << '\n' << genre << '\n' << status << '\n';
+
+		//insert borrower's list
+		for (const std::string& borrower : borrower_record) {
+			textfile << borrower << std::endl;
+		}
+
+		if (!reserveName.empty()) {
+			textfile << reserveName << std::endl;
+		}
+	}
+	textfile.close();
+}
+
