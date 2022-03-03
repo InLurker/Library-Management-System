@@ -9,5 +9,6 @@
 #include"Book.h"
 
 book getDataList(const std::string& filename);
+std::string base64_encode(const std::string& in);
 
 #endif
