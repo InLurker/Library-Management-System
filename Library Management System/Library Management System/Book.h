@@ -21,7 +21,7 @@ public:
     void borrowBook(const std::string& name, const std::string& phoneNum);
     void reserveBook(const std::string& name, const std::string& phoneNum);
     void returnBook();
-    void modifyBorrower(int rowIndex, std::string name, std::string phoneNum);
+    void modifyBorrower(int rowIndex, const std::string& name, const std::string& phoneNum);
     void deleteBorrower(int rowIndex);
     void modifyDetails(std::string detailType, std::string newDetail);
     void deleteBook(); 

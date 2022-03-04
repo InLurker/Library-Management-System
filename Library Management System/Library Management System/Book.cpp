@@ -81,10 +81,13 @@ void book::returnBook() {
 	this->updateDetails();
 }
 
-void book::modifyBorrower(int rowIndex, std::string name, std::string phoneNum) {
+void book::modifyBorrower(int rowIndex, const std::string& name, const std::string& phoneNum) {
+	borrower_record[rowIndex] = (name + " - " + phoneNum);
+	this->updateDetails();
 }
-
 void book::deleteBorrower(int rowIndex) {
+	borrower_record.erase(borrower_record.begin() + rowIndex);
+	this->updateDetails();
 }
 
 void book::modifyDetails(std::string detailType, std::string newDetail) {

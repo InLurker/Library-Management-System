@@ -10,6 +10,8 @@
 
 using namespace std;
 
+void modifyInfo(const string& name, const string& phoneNum, const string& search_query, int selectionNum);
+void deleteBorrower(const string& search_query, int selectionNum);
 void printBookData(const book &Book);
 string number_clear_formatting(const string& text);
 bool is_number(const string& str);
@@ -788,10 +790,140 @@ int main() {
                     }
                 }
                     break;
-                case 4:
-                    break;
-                case 5:
-                    break;
+                case 4: {
+                    string search_query, name, phoneNum;
+                    book BookData;
+                    int selectionNum = 0;
+                    cout << "Input ISBN number: ";
+                    cin.ignore();
+                    getline(cin, search_query);
+                    clearScreen();
+                    if (!search_query.empty()) {
+                        search_query = number_clear_formatting(search_query);
+                        if (is_number(search_query)) {
+                            BookData = getDataList(search_query);
+                            if (BookData.title.empty()) {
+                                cout << "Book doesn't exist in our database." << endl;
+                            }
+                            else {
+                                clearScreen();
+                                for (const string& borrower : BookData.borrower_record) {
+                                    cout << ++selectionNum << ". " << borrower << endl;
+                                }
+                                cout << endl;
+                                if (selectionNum == 1) {
+                                    string select;
+                                    cout << "This book only has 1 borrower." << endl;
+                                    cout << "Is this the borrower you'd like to modify? [Y/N]: ";
+                                    cin >> select;
+                                    select = toUpperCase(select);
+                                    if (select == "Y" || select == "YES") {
+                                        cout << "Name: ";
+                                        cin.ignore();
+                                        getline(cin, name);
+                                        cout << "Phone No: ";
+                                        getline(cin, phoneNum);
+                                        clearScreen();
+                                        phoneNum = number_clear_formatting(phoneNum);
+                                        modifyInfo(name, phoneNum, search_query, selectionNum);
+                                    }
+                                    else if (select == "N" || select == "NO") {
+                                        clearScreen();
+                                        cout << "Request cancelled." << endl;
+                                    }
+                                    
+                                }
+                                else if (selectionNum > 1) {
+                                    cout << "Select a borrower's record [1-" + to_string(selectionNum) + "]: ";
+                                    cin >> selectionNum;
+                                    if (selectionNum > 0 && selectionNum <= BookData.borrower_record.size()) {
+                                        cin.ignore();
+                                        cout << "Name: ";
+                                        getline(cin, name);
+                                        cout << "Phone No: ";
+                                        getline(cin, phoneNum);
+                                        clearScreen();
+                                        phoneNum = number_clear_formatting(phoneNum);
+                                        modifyInfo(name, phoneNum, search_query, selectionNum);
+                                    }
+                                    else {
+                                        clearScreen();
+                                        cout << "Not a valid input. Try again." << endl;
+                                    }
+                                }
+                                else if (selectionNum < 1) {
+                                    clearScreen();
+                                    cout << "No records available." << endl;
+                                }
+                            }
+                        }
+                        else cout << "Not a valid ISBN number." << endl;
+                    }
+                }
+                      break;
+                case 5: {
+                    string search_query, name, phoneNum;
+                    book BookData;
+                    int selectionNum = 0;
+                    cout << "Input ISBN number: ";
+                    cin.ignore();
+                    getline(cin, search_query);
+                    clearScreen();
+                    if (!search_query.empty()) {
+                        search_query = number_clear_formatting(search_query);
+                        if (!search_query.empty()) {
+                            search_query = number_clear_formatting(search_query);
+                            if (is_number(search_query)) {
+                                BookData = getDataList(search_query);
+                                if (BookData.title.empty()) {
+                                    cout << "Book doesn't exist in our database." << endl;
+                                }
+                                else {
+                                    clearScreen();
+                                    for (const string& borrower : BookData.borrower_record) {
+                                        cout << ++selectionNum << ". " << borrower << endl;
+                                    }
+                                    cout << endl;
+                                    if (selectionNum == 1) {
+                                        string select;
+                                        cout << "This book only has 1 borrower." << endl;
+                                        cout << "Is this the borrower you'd like to delete? [Y/N]? ";
+                                        cin >> select;
+                                        select = toUpperCase(select);
+                                        if (select == "Y" || select == "YES") {
+                                            deleteBorrower(search_query, selectionNum);
+                                        }
+                                        else if (select == "N" || select == "NO") {
+                                            clearScreen();
+                                            cout << "Borrower not deleted." << endl;
+                                        }
+                                        else {
+                                            clearScreen();
+                                            cout << "Not a valid input. Try again." << endl;
+                                        }
+                                    }
+                                    if (selectionNum > 1) {
+                                        cout << "Select a borrower's record [1-" + to_string(selectionNum) + "]: ";
+                                        cin >> selectionNum;
+                                        if (selectionNum > 0 && selectionNum <= BookData.borrower_record.size()) {
+                                            deleteBorrower(search_query, selectionNum);
+                                        }
+                                        else {
+                                            clearScreen();
+                                            cout << "Not a valid input. Try again." << endl;
+                                        }
+                                    }
+                                    else if (selectionNum < 1) {
+                                        clearScreen();
+                                        cout << "No records available." << endl;
+                                    }
+                                }
+                            }
+                            else cout << "Not a valid ISBN number." << endl;
+                        }
+                    }
+                }
+                      break;
                 case 6:
                     break;
                 case 7:
@@ -811,6 +943,28 @@ int main() {
         }
     }
 
+}
+
+void deleteBorrower(const string& search_query, int selectionNum) {
+    book BookData;
+    BookData = getDataList(search_query);
+    BookData.deleteBorrower(selectionNum - 1);
+    clearScreen();
+    cout << "Borrower successfully deleted." << endl;
+}
+
+void modifyInfo(const string& name, const string& phoneNum, const string& search_query, int selectionNum) {
+    book BookData;
+    BookData = getDataList(search_query);
+    if (is_number(phoneNum)) {
+        BookData.modifyBorrower(selectionNum - 1, name, phoneNum);
+        clearScreen();
+        cout << "Borrower successfully modified." << endl;
+    }
+    else {
+        clearScreen();
+        cout << "Invalid phone number." << endl;
+    }
 }
 
 void printBookData(const book& Book) {
@@ -834,7 +988,7 @@ void printBookData(const book& Book) {
 string number_clear_formatting(const string& text) {
     string returnString;
     for (const char &letter : text) {
-        if (letter != '-' && letter != ' ') {
+        if (letter != '-' && letter != ' ' && letter != '+' && letter != '(' && letter != ')') {
             returnString += letter;
         }
     }
