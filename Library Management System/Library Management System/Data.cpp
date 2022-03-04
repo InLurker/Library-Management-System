@@ -36,22 +36,17 @@ book getDataList(const std::string& filename) {
 	return returnBook;
 };
 
-
-static const std::string b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
-std::string base64_encode(const std::string& in)
-{
+std::string base64_encode(const std::string& in) {
+	const std::string b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     std::string out;
 
     int val = 0, valb = -6;
     
-    for (char c : in)
-    {
+    for (char c : in) {
         val = (val << 8) + c;
         valb += 8;
         
-        while (valb >= 0)
-        {
+        while (valb >= 0) {
             out.push_back(b[(val >> valb) & 0x3F]);
             valb -= 6;
         }

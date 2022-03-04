@@ -90,7 +90,8 @@ void book::deleteBorrower(int rowIndex) {
 	this->updateDetails();
 }
 
-void book::modifyDetails(std::string detailType, std::string newDetail) {
+void book::modifyDetails(const std::string& detailType, const std::string& newDetail) {
+
 }
 
 void book::deleteBook() {
