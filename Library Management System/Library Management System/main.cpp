@@ -7,6 +7,7 @@
 #include "book_indexing.h"
 #include "Data.h"
 #include "Book.h"
+#include "Password.h"
 
 using namespace std;
 
@@ -40,7 +41,8 @@ int main() {
         cout << "4. Borrow a book" << endl;
         cout << "5. Reserve a book" << endl;
         cout << "6. Adminstrator mode" << endl;
-        cout << "7. Exit" << endl;
+        cout << "7. Change password" << endl;
+        cout << "8. Exit" << endl;
         cout << "Select an action: ";
         cin >> action;
 
@@ -461,6 +463,7 @@ int main() {
                     if (action == 1) {
                         if (function_ptr != NULL) {
                             string name, phoneNum;
+                            cin.ignore();
                             cout << "Name: ";
                             getline(cin, name);
                             cout << "Phone No: ";
@@ -490,10 +493,16 @@ int main() {
                         cout << "Book successfully returned." << endl;
                     }
                     else if (action == count + 1) {
-                        //Password verification to be implemented
-                        BookData.deleteBook();
+                        string toCheck;
+                        cin.ignore();
+                        cout << "Enter password: ";
+                        getline(cin, toCheck);
                         clearScreen();
-                        cout << "Book successfully deleted." << endl;
+                        if (checkPassword(toCheck)) {
+                            BookData.deleteBook();
+                            cout << "Book successfully deleted." << endl;
+                        }
+                        else cout << "Wrong password!" << endl;
                     }
                     else if (action != count + 2) {
                         clearScreen();
@@ -505,67 +514,73 @@ int main() {
         }
             break;
         case 2: {
-            string bookDetails;
-            clearScreen();
-            cout << "Enter book details." << endl;
-            cout << "ISBN: ";
+            string toCheck;
             cin.ignore();
-            getline(cin, bookDetails);
-            bookDetails = number_clear_formatting(bookDetails);
-            if (is_number(bookDetails)) {
-                if (filesystem::exists("./data/" + bookDetails + ".txt")) { //if txt file of the same ISBN exist in database
-                    cout << "Book already existed." << endl;
-                    string select;
-                    cout << "Override previous entry?[Y/N]: ";
-                    cin >> select;
-                    select = toUpperCase(select);
+            cout << "Enter password: ";
+            getline(cin, toCheck);
+            clearScreen();
+            if (checkPassword(toCheck)) {
+                string bookDetails;
+                cout << "Enter book details." << endl;
+                cout << "ISBN: ";
+                cin.ignore();
+                getline(cin, bookDetails);
+                bookDetails = number_clear_formatting(bookDetails);
+                if (is_number(bookDetails)) {
+                    if (filesystem::exists("./data/" + bookDetails + ".txt")) { //if txt file of the same ISBN exist in database
+                        cout << "Book already existed." << endl;
+                        string select;
+                        cout << "Override previous entry?[Y/N]: ";
+                        cin >> select;
+                        select = toUpperCase(select);
+                        clearScreen();
+                        if (select == "Y" || select == "YES") {
+                            if (filesystem::remove("./data/" + bookDetails + ".txt"))
+                                cout << "Insert new details." << endl;
+                        }
+                        else if (select == "N" || select == "NO") {
+                            cout << "Book not inserted." << endl;
+                            break;
+                        }
+                        else {
+                            cout << "Not a valid input. Try again." << endl;
+                            break;
+                        }
+                        cin.ignore();
+                    }
+                    book newBook;
+                    newBook.ISBN = bookDetails;
+
+                    cout << "Title: ";
+                    getline(cin, bookDetails);
+                    newBook.title = bookDetails;
+
+                    cout << "Author: ";
+                    getline(cin, bookDetails);
+                    newBook.author = bookDetails;
+
+                    cout << "Genre: ";
+                    getline(cin, bookDetails);
+                    newBook.genre = bookDetails;
+
+                    cout << "Publisher: ";
+                    getline(cin, bookDetails);
+                    newBook.publisher = bookDetails;
+
+                    newBook.status = "Available";
+
+                    newBook.addToDatabase();
+
                     clearScreen();
-                    if (select == "Y" || select == "YES") {
-                        if (filesystem::remove("./data/" + bookDetails + ".txt"))
-                            cout << "Insert new details." << endl;
+                    if (filesystem::exists("./data/" + newBook.ISBN + ".txt")) {
+                        cout << "Book successfully inserted." << endl;
                     }
-                    else if (select == "N" || select == "NO") {
-                        cout << "Book not inserted." << endl;
-                        break;
-                    }
-                    else {
-                        cout << "Not a valid input. Try again." << endl;
-                        break;
-                    }
-                    cin.ignore();
                 }
-                book newBook;
-                newBook.ISBN = bookDetails;
-
-                cout << "Title: ";
-                getline(cin, bookDetails);
-                newBook.title = bookDetails;
-
-                cout << "Author: ";
-                getline(cin, bookDetails);
-                newBook.author = bookDetails;
-
-                cout << "Genre: ";
-                getline(cin, bookDetails);
-                newBook.genre = bookDetails;
-
-                cout << "Publisher: ";
-                getline(cin, bookDetails);
-                newBook.publisher = bookDetails;
-
-                newBook.status = "Available";
-
-                newBook.addToDatabase();
-
-                clearScreen();
-                if (filesystem::exists("./data/" + newBook.ISBN + ".txt")) {
-                    cout << "Book successfully inserted." << endl;
+                else {
+                    clearScreen();
+                    cout << "Not a valid ISBN number." << endl;
                 }
-            }
-            else {
-                clearScreen();
-                cout << "Not a valid ISBN number." << endl;
-            }
+            } else cout << "Wrong password!" << endl;
         }
             break;
         case 3: {
@@ -681,198 +696,126 @@ int main() {
         }
             break;
         case 6: {
-            int option = 0;
+            string toCheck;
+            cin.ignore();
+            cout << "Enter password: ";
+            getline(cin, toCheck);
             clearScreen();
-            while (option != 7) {
-                cout << "Administrator Mode:" << endl;
-                cout << "1. Insert a book" << endl;
-                cout << "2. Modify a book" << endl;
-                cout << "3. Delete a book" << endl;
-                cout << "4. Modify a borrower" << endl;
-                cout << "5. Delete a borrower" << endl;
-                cout << "6. Search a borrowing list" << endl;
-                cout << "7. Exit Administrator Mode" << endl;
-                cout << "Select an option: ";
-                cin >> option;
-
+            if (checkPassword(toCheck)) {
+                int option = 0;
                 clearScreen();
-                switch (option) {
-                case 1: {
-                    string bookDetails;
-                    cout << "Enter book details." << endl;
-                    cout << "ISBN: ";
-                    cin.ignore();
-                    getline(cin, bookDetails);
-                    bookDetails = number_clear_formatting(bookDetails);
-                    if (is_number(bookDetails)) {
-                        if (filesystem::exists("./data/" + bookDetails + ".txt")) { //if txt file of the same ISBN exist in database
-                            cout << "Book already existed." << endl;
-                            string select;
-                            cout << "Override previous entry?[Y/N]: ";
-                            cin >> select;
-                            select = toUpperCase(select);
-                            clearScreen();
-                            if (select == "Y" || select == "YES") {
-                                if (filesystem::remove("./data/" + bookDetails + ".txt"))
-                                    cout << "Insert new details." << endl;
-                            }
-                            else if (select == "N" || select == "NO") {
-                                cout << "Book not inserted." << endl;
-                                break;
-                            }
-                            else {
-                                cout << "Not a valid input. Try again." << endl;
-                                break;
-                            }
-                            cin.ignore();
-                        }
-                        book newBook;
-                        newBook.ISBN = bookDetails;
+                while (option != 7) {
+                    cout << "Administrator Mode:" << endl;
+                    cout << "1. Insert a book" << endl;
+                    cout << "2. Modify a book" << endl;
+                    cout << "3. Delete a book" << endl;
+                    cout << "4. Modify a borrower" << endl;
+                    cout << "5. Delete a borrower" << endl;
+                    cout << "6. Search a borrowing list" << endl;
+                    cout << "7. Exit Administrator Mode" << endl;
+                    cout << "Select an option: ";
+                    cin >> option;
 
-                        cout << "Title: ";
-                        getline(cin, bookDetails);
-                        newBook.title = bookDetails;
-
-                        cout << "Author: ";
-                        getline(cin, bookDetails);
-                        newBook.author = bookDetails;
-
-                        cout << "Genre: ";
-                        getline(cin, bookDetails);
-                        newBook.genre = bookDetails;
-
-                        cout << "Publisher: ";
-                        getline(cin, bookDetails);
-                        newBook.publisher = bookDetails;
-
-                        newBook.status = "Available";
-
-                        newBook.addToDatabase();
-
-                        clearScreen();
-                        if (filesystem::exists("./data/" + newBook.ISBN + ".txt")) {
-                            cout << "Book successfully inserted." << endl;
-                        }
-                    }
-                    else {
-                        clearScreen();
-                        cout << "Not a valid ISBN number." << endl;
-                    }
-                }
-                    break;
-                case 2:
-                    break;
-                case 3: {
-                    string toDelete;
-                    cout << "Input ISBN number: ";
-                    cin.ignore();
-                    getline(cin, toDelete);
                     clearScreen();
-                    if (!toDelete.empty()) {
-                        toDelete = number_clear_formatting(toDelete);
-                        if (is_number(toDelete)) {
-                            book BookData = getDataList(toDelete);
-
-                            clearScreen();
-                            if (!BookData.title.empty()) {
-                                BookData.deleteBook();
-                                if (!filesystem::exists("./data/" + toDelete + ".txt")) //if data no longer exist
-                                    cout << "Book successfully deleted." << endl;
-                                else
-                                    cout << "Book failed to delete." << endl;
-                            }
-                            else cout << "Book doesn't exist in our database." << endl;
-                        }
-                        else cout << "Not a valid ISBN number." << endl;
-                    }
-                }
-                    break;
-                case 4: {
-                    string search_query, name, phoneNum;
-                    book BookData;
-                    int selectionNum = 0;
-                    cout << "Input ISBN number: ";
-                    cin.ignore();
-                    getline(cin, search_query);
-                    clearScreen();
-                    if (!search_query.empty()) {
-                        search_query = number_clear_formatting(search_query);
-                        if (is_number(search_query)) {
-                            BookData = getDataList(search_query);
-                            if (BookData.title.empty()) {
-                                cout << "Book doesn't exist in our database." << endl;
-                            }
-                            else {
+                    switch (option) {
+                    case 1: {
+                        string bookDetails;
+                        cout << "Enter book details." << endl;
+                        cout << "ISBN: ";
+                        cin.ignore();
+                        getline(cin, bookDetails);
+                        bookDetails = number_clear_formatting(bookDetails);
+                        if (is_number(bookDetails)) {
+                            if (filesystem::exists("./data/" + bookDetails + ".txt")) { //if txt file of the same ISBN exist in database
+                                cout << "Book already existed." << endl;
+                                string select;
+                                cout << "Override previous entry?[Y/N]: ";
+                                cin >> select;
+                                select = toUpperCase(select);
                                 clearScreen();
-                                for (const string& borrower : BookData.borrower_record) {
-                                    cout << ++selectionNum << ". " << borrower << endl;
+                                if (select == "Y" || select == "YES") {
+                                    if (filesystem::remove("./data/" + bookDetails + ".txt"))
+                                        cout << "Insert new details." << endl;
                                 }
-                                cout << endl;
-                                if (selectionNum == 1) {
-                                    string select;
-                                    cout << "This book only has 1 borrower." << endl;
-                                    cout << "Is this the borrower you'd like to modify? [Y/N]: ";
-                                    cin >> select;
-                                    select = toUpperCase(select);
-                                    if (select == "N" || select == "NO") {
-                                        clearScreen();
-                                        cout << "Request cancelled." << endl;
-                                        break;
-                                    }
-                                    else if (select != "Y" && select != "YES") {
-                                        clearScreen();
-                                        cout << "Not a valid input. Try again." << endl;
-                                        break;
-                                    }
+                                else if (select == "N" || select == "NO") {
+                                    cout << "Book not inserted." << endl;
+                                    break;
                                 }
-                                else if (selectionNum > 1) {
-                                    cout << "Select a borrower's record [1-" + to_string(selectionNum) + "]: ";
-                                    cin >> selectionNum;
-                                    if (selectionNum < 1 || selectionNum > BookData.borrower_record.size()) {
-                                        clearScreen();
-                                        cout << "Not a valid input. Try again." << endl;
-                                        break;
-                                    }
-                                }
-                                else if (selectionNum < 1) {
-                                    clearScreen();
-                                    cout << "No records available." << endl;
+                                else {
+                                    cout << "Not a valid input. Try again." << endl;
                                     break;
                                 }
                                 cin.ignore();
-                                cout << "\nInsert new details." << endl;
-                                cout << "Name: ";
-                                getline(cin, name);
-                                cout << "Phone No: ";
-                                getline(cin, phoneNum);
-                                clearScreen();
-                                phoneNum = number_clear_formatting(phoneNum);
+                            }
+                            book newBook;
+                            newBook.ISBN = bookDetails;
 
-                                if (is_number(phoneNum)) {
-                                    BookData.modifyBorrower(selectionNum - 1, name, phoneNum);
-                                    clearScreen();
-                                    cout << "Borrower successfully modified." << endl;
-                                }
-                                else {
-                                    clearScreen();
-                                    cout << "Invalid phone number." << endl;
-                                }
+                            cout << "Title: ";
+                            getline(cin, bookDetails);
+                            newBook.title = bookDetails;
+
+                            cout << "Author: ";
+                            getline(cin, bookDetails);
+                            newBook.author = bookDetails;
+
+                            cout << "Genre: ";
+                            getline(cin, bookDetails);
+                            newBook.genre = bookDetails;
+
+                            cout << "Publisher: ";
+                            getline(cin, bookDetails);
+                            newBook.publisher = bookDetails;
+
+                            newBook.status = "Available";
+
+                            newBook.addToDatabase();
+
+                            clearScreen();
+                            if (filesystem::exists("./data/" + newBook.ISBN + ".txt")) {
+                                cout << "Book successfully inserted." << endl;
                             }
                         }
-                        else cout << "Not a valid ISBN number." << endl;
+                        else {
+                            clearScreen();
+                            cout << "Not a valid ISBN number." << endl;
+                        }
                     }
-                }
-                      break;
-                case 5: {
-                    string search_query, name, phoneNum;
-                    book BookData;
-                    int selectionNum = 0;
-                    cout << "Input ISBN number: ";
-                    cin.ignore();
-                    getline(cin, search_query);
-                    clearScreen();
-                    if (!search_query.empty()) {
-                        search_query = number_clear_formatting(search_query);
+                          break;
+                    case 2:
+                        break;
+                    case 3: {
+                        string toDelete;
+                        cout << "Input ISBN number: ";
+                        cin.ignore();
+                        getline(cin, toDelete);
+                        clearScreen();
+                        if (!toDelete.empty()) {
+                            toDelete = number_clear_formatting(toDelete);
+                            if (is_number(toDelete)) {
+                                book BookData = getDataList(toDelete);
+
+                                clearScreen();
+                                if (!BookData.title.empty()) {
+                                    BookData.deleteBook();
+                                    if (!filesystem::exists("./data/" + toDelete + ".txt")) //if data no longer exist
+                                        cout << "Book successfully deleted." << endl;
+                                    else
+                                        cout << "Book failed to delete." << endl;
+                                }
+                                else cout << "Book doesn't exist in our database." << endl;
+                            }
+                            else cout << "Not a valid ISBN number." << endl;
+                        }
+                    }
+                          break;
+                    case 4: {
+                        string search_query, name, phoneNum;
+                        book BookData;
+                        int selectionNum = 0;
+                        cout << "Input ISBN number: ";
+                        cin.ignore();
+                        getline(cin, search_query);
+                        clearScreen();
                         if (!search_query.empty()) {
                             search_query = number_clear_formatting(search_query);
                             if (is_number(search_query)) {
@@ -889,58 +832,154 @@ int main() {
                                     if (selectionNum == 1) {
                                         string select;
                                         cout << "This book only has 1 borrower." << endl;
-                                        cout << "Is this the borrower you'd like to delete? [Y/N]? ";
+                                        cout << "Is this the borrower you'd like to modify? [Y/N]: ";
                                         cin >> select;
                                         select = toUpperCase(select);
-                                        if (select == "Y" || select == "YES") {
-                                            BookData.deleteBorrower(selectionNum - 1);
+                                        if (select == "N" || select == "NO") {
                                             clearScreen();
-                                            cout << "Borrower successfully deleted." << endl;
+                                            cout << "Request cancelled." << endl;
+                                            break;
                                         }
-                                        else if (select == "N" || select == "NO") {
-                                            clearScreen();
-                                            cout << "Borrower not deleted." << endl;
-                                        }
-                                        else {
+                                        else if (select != "Y" && select != "YES") {
                                             clearScreen();
                                             cout << "Not a valid input. Try again." << endl;
+                                            break;
                                         }
                                     }
-                                    if (selectionNum > 1) {
+                                    else if (selectionNum > 1) {
                                         cout << "Select a borrower's record [1-" + to_string(selectionNum) + "]: ";
                                         cin >> selectionNum;
-                                        if (selectionNum > 0 && selectionNum <= BookData.borrower_record.size()) {
-                                            BookData.deleteBorrower(selectionNum - 1);
-                                            clearScreen();
-                                            cout << "Borrower successfully deleted." << endl;
-                                        }
-                                        else {
+                                        if (selectionNum < 1 || selectionNum > BookData.borrower_record.size()) {
                                             clearScreen();
                                             cout << "Not a valid input. Try again." << endl;
+                                            break;
                                         }
                                     }
                                     else if (selectionNum < 1) {
                                         clearScreen();
                                         cout << "No records available." << endl;
+                                        break;
+                                    }
+                                    cin.ignore();
+                                    cout << "\nInsert new details." << endl;
+                                    cout << "Name: ";
+                                    getline(cin, name);
+                                    cout << "Phone No: ";
+                                    getline(cin, phoneNum);
+                                    clearScreen();
+                                    phoneNum = number_clear_formatting(phoneNum);
+
+                                    if (is_number(phoneNum)) {
+                                        BookData.modifyBorrower(selectionNum - 1, name, phoneNum);
+                                        clearScreen();
+                                        cout << "Borrower successfully modified." << endl;
+                                    }
+                                    else {
+                                        clearScreen();
+                                        cout << "Invalid phone number." << endl;
                                     }
                                 }
                             }
                             else cout << "Not a valid ISBN number." << endl;
                         }
                     }
-                }
-                      break;
-                case 6:
-                    break;
-                case 7:
-                    break;
-                default:
-                    break;
+                          break;
+                    case 5: {
+                        string search_query, name, phoneNum;
+                        book BookData;
+                        int selectionNum = 0;
+                        cout << "Input ISBN number: ";
+                        cin.ignore();
+                        getline(cin, search_query);
+                        clearScreen();
+                        if (!search_query.empty()) {
+                            search_query = number_clear_formatting(search_query);
+                            if (!search_query.empty()) {
+                                search_query = number_clear_formatting(search_query);
+                                if (is_number(search_query)) {
+                                    BookData = getDataList(search_query);
+                                    if (BookData.title.empty()) {
+                                        cout << "Book doesn't exist in our database." << endl;
+                                    }
+                                    else {
+                                        clearScreen();
+                                        for (const string& borrower : BookData.borrower_record) {
+                                            cout << ++selectionNum << ". " << borrower << endl;
+                                        }
+                                        cout << endl;
+                                        if (selectionNum == 1) {
+                                            string select;
+                                            cout << "This book only has 1 borrower." << endl;
+                                            cout << "Is this the borrower you'd like to delete? [Y/N]? ";
+                                            cin >> select;
+                                            select = toUpperCase(select);
+                                            if (select == "Y" || select == "YES") {
+                                                BookData.deleteBorrower(selectionNum - 1);
+                                                clearScreen();
+                                                cout << "Borrower successfully deleted." << endl;
+                                            }
+                                            else if (select == "N" || select == "NO") {
+                                                clearScreen();
+                                                cout << "Borrower not deleted." << endl;
+                                            }
+                                            else {
+                                                clearScreen();
+                                                cout << "Not a valid input. Try again." << endl;
+                                            }
+                                        }
+                                        if (selectionNum > 1) {
+                                            cout << "Select a borrower's record [1-" + to_string(selectionNum) + "]: ";
+                                            cin >> selectionNum;
+                                            if (selectionNum > 0 && selectionNum <= BookData.borrower_record.size()) {
+                                                BookData.deleteBorrower(selectionNum - 1);
+                                                clearScreen();
+                                                cout << "Borrower successfully deleted." << endl;
+                                            }
+                                            else {
+                                                clearScreen();
+                                                cout << "Not a valid input. Try again." << endl;
+                                            }
+                                        }
+                                        else if (selectionNum < 1) {
+                                            clearScreen();
+                                            cout << "No records available." << endl;
+                                        }
+                                    }
+                                }
+                                else cout << "Not a valid ISBN number." << endl;
+                            }
+                        }
+                    }
+                          break;
+                    case 6:
+                        break;
+                    case 7:
+                        break;
+                    default:
+                        break;
+                    }
                 }
             }
+            else cout << "Wrong password!" << endl;
         }
             break;
-        case 7:
+        case 7: {
+            string password;
+            cin.ignore();
+            cout << "Current password: ";
+            getline(cin, password);
+            clearScreen();
+            if (checkPassword(password)) {
+                cout << "Enter new password: ";
+                getline(cin, password);
+                savePassword(password);
+                clearScreen();
+                cout << "Password successfully saved." << endl;
+            }
+            else cout << "Wrong password!" << endl;
+        }
+            break;
+        case 8:
             return 0;
             break;
         default:
@@ -972,7 +1011,7 @@ void printBookData(const book& Book) {
 string number_clear_formatting(const string& text) {
     string returnString;
     for (const char &letter : text) {
-        if (letter != '-' && letter != ' ' && letter != '+' && letter != '(' && letter != ')') {
+        if (letter >= '0' && letter <= '9') {
             returnString += letter;
         }
     }

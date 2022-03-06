@@ -144,12 +144,14 @@
     <ClInclude Include="book_indexing.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="IndexSearching.h" />
+    <ClInclude Include="Password.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Book.cpp" />
     <ClCompile Include="Data.cpp" />
     <ClCompile Include="IndexSearching.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Password.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
