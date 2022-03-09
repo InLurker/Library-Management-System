@@ -523,7 +523,6 @@ int main() {
                 string bookDetails;
                 cout << "Enter book details." << endl;
                 cout << "ISBN: ";
-                cin.ignore();
                 getline(cin, bookDetails);
                 bookDetails = number_clear_formatting(bookDetails);
                 if (is_number(bookDetails)) {
@@ -781,7 +780,60 @@ int main() {
                         }
                     }
                           break;
-                    case 2:
+                    case 2: {
+                        string ISBN;
+                        cout << "Input ISBN number: " << endl;
+                        cout << "ISBN: ";
+                        cin.ignore();
+                        getline(cin, ISBN);
+                        ISBN = number_clear_formatting(ISBN);
+                        clearScreen();
+                        if (is_number(ISBN)) {
+                            if (filesystem::exists("./data/" + ISBN + ".txt")) {
+                                book BookData = getDataList(ISBN);
+                                int selectionNum = 0;
+                                cout << "Book Details:" << endl;
+                                cout << ++selectionNum << ". " << "ISBN: " << BookData.ISBN << endl;
+                                cout << ++selectionNum << ". " << "Title: " << BookData.title << endl;
+                                cout << ++selectionNum << ". " << "Author: " << BookData.author << endl;
+                                cout << ++selectionNum << ". " << "Genre: " << BookData.genre << endl;
+                                cout << ++selectionNum << ". " << "Publisher: " << BookData.publisher << endl;
+
+                                string options[5] = { "ISBN", "title", "author", "genre", "publisher" };
+                                cout << "Select a detail to modify [1-5]: ";
+                                cin >> selectionNum;
+                                if (selectionNum > 0 && selectionNum < 6) {
+                                    string newDetail;
+                                    cin.ignore();
+                                    cout << "New " + options[selectionNum - 1] + ": ";
+                                    getline(cin, newDetail);
+                                    clearScreen();
+                                    if (selectionNum == 1) { //if user select ISBN
+                                        if (filesystem::exists("./data/" + newDetail + ".txt")) {
+                                            //if the ISBN overlap with another book
+                                            cout << "ISBN number overlaps with an existing record." << endl;
+                                            break;
+                                        }
+                                        else {
+                                            newDetail = number_clear_formatting(newDetail);
+                                            if (!is_number(newDetail)) {
+                                                cout << "Not a valid ISBN number." << endl;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    BookData.modifyDetails(options[selectionNum - 1], newDetail);
+                                    cout << "Book details successfully modified." << endl;
+                                }
+                                else {
+                                    clearScreen();
+                                    cout << "Not a valid input. Try again." << endl;
+                                }
+                            }
+                            else cout << "Book doesn't exist in our database." << endl;
+                        }
+                        else cout << "Not a valid ISBN number." << endl;
+                    }
                         break;
                     case 3: {
                         string toDelete;
@@ -825,6 +877,7 @@ int main() {
                                 }
                                 else {
                                     clearScreen();
+                                    cout << "Borrower's Record:" << endl;
                                     for (const string& borrower : BookData.borrower_record) {
                                         cout << ++selectionNum << ". " << borrower << endl;
                                     }
@@ -1011,7 +1064,7 @@ void printBookData(const book& Book) {
 string number_clear_formatting(const string& text) {
     string returnString;
     for (const char &letter : text) {
-        if (letter >= '0' && letter <= '9') {
+        if (letter != '-' && letter != ' ' && letter != '+' && letter != '(' && letter != ')') {
             returnString += letter;
         }
     }
