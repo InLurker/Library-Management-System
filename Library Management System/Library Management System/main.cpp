@@ -152,8 +152,8 @@ int main() {
                         select = toUpperCase(select);
                         clearScreen();
                         if (select == "Y" || select == "YES") {
-                            if (filesystem::remove("./data/" + bookDetails + ".txt"))
-                                cout << "Insert new details." << endl;
+                            getDataList(bookDetails).deleteBook();
+                            cout << "Insert new details." << endl;
                         }
                         else if (select == "N" || select == "NO") {
                             cout << "Book not inserted." << endl;
@@ -304,8 +304,8 @@ int main() {
                                 select = toUpperCase(select);
                                 clearScreen();
                                 if (select == "Y" || select == "YES") {
-                                    if (filesystem::remove("./data/" + bookDetails + ".txt"))
-                                        cout << "Insert new details." << endl;
+                                    getDataList(bookDetails).deleteBook();
+                                    cout << "Insert new details." << endl;
                                 }
                                 else if (select == "N" || select == "NO") {
                                     cout << "Book not inserted." << endl;
@@ -483,6 +483,7 @@ int main() {
                         else {
                             clearScreen();
                             int selectionNum = 0;
+                            cout << "Borrower's Record:" << endl;
                             for (const string& borrower : BookData.borrower_record) {
                                 cout << ++selectionNum << ". " << borrower << endl;
                             }

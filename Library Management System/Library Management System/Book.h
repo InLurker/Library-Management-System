@@ -6,6 +6,7 @@
 #include <vector>
 #include <filesystem>
 #include <fstream>
+#include "book_indexing.h"
 
 class book {
 public:
@@ -27,5 +28,7 @@ public:
     void deleteBook(); 
 private:
     void updateDetails();
+    int binarySearchPosition(const std::vector<book_indexing>& vectorArray, const book_indexing* item) const;
 };
+
 #endif
