@@ -29,14 +29,14 @@ void book::addToDatabase() {
 		std::vector <book_indexing> entries;
 		textfile.open(std::filesystem::path(base_path), std::ios::in);
 		if (textfile.is_open()) {
+			book_indexing* entry = new book_indexing;
 			while (std::getline(textfile, line)) {
-				book_indexing* entry = new book_indexing;
 				entry->title = line;
 				getline(textfile, line);
 				entry->ISBN = line;
 				entries.push_back(*entry); //add existing book indexes to vector
-				delete entry; //deallocate memory
 			}
+			delete entry; //deallocate memory
 		}
 		textfile.close();
 
@@ -51,7 +51,6 @@ void book::addToDatabase() {
 		textfile.close();
 		entries.clear();
 	}
-
 	delete newEntry; //prevent memory leak
 }
 
@@ -122,14 +121,14 @@ void book::modifyDetails(const std::string& detailType, const std::string& newDe
 			bool updated = false;
 
 			if (indexfile.is_open()) {
+				book_indexing* entry = new book_indexing;
 				while (std::getline(indexfile, line)) {
-					book_indexing* entry = new book_indexing;
 					entry->title = line;
 					getline(indexfile, line);
 					entry->ISBN = line;
 					entries.push_back(*entry); //add existing book indexes to vector
-					delete entry; //deallocate memory
 				}
+				delete entry; //deallocate memory
 			}
 			indexfile.close();
 
@@ -215,14 +214,14 @@ void book::modifyDetails(const std::string& detailType, const std::string& newDe
 
 	//insert to new index file
 	if (indexfile.is_open()) {
+		book_indexing* entry = new book_indexing;
 		while (std::getline(indexfile, line)) {
-			book_indexing* entry = new book_indexing;
 			entry->title = line;
 			getline(indexfile, line);
 			entry->ISBN = line;
 			entries.push_back(*entry); //add existing book indexes to vector
-			delete entry; //deallocate memory
 		}
+		delete entry; //deallocate memory
 	}
 	indexfile.close();
 
@@ -265,14 +264,14 @@ void book::deleteBook() {
 		indexfile.open(std::filesystem::path(base_path), std::ios::in);
 
 		if (indexfile.is_open()) {
+			book_indexing* entry = new book_indexing;
 			while (std::getline(indexfile, line)) {
-				book_indexing* entry = new book_indexing;
 				entry->title = line;
 				getline(indexfile, line);
 				entry->ISBN = line;
 				entries.push_back(*entry); //add existing book indexes to vector
-				delete entry; //deallocate memory
 			}
+			delete entry; //deallocate memory
 		}
 		indexfile.close();
 

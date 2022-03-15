@@ -31,6 +31,7 @@ book getDataList(const std::string& filename) {
 			if (!entry->title.empty() && !entry->author.empty() && !entry->publisher.empty() && !entry->genre.empty()) {
 				returnBook = *entry;
 			}
+			delete entry; //prevent memory leak
 		}
 	}
 	return returnBook;

@@ -13,13 +13,11 @@ std::vector <book_indexing> searchByTitle(std::string query) {
     for (const std::filesystem::directory_entry &textfiles: std::filesystem::directory_iterator(base_path)) { //get all txt files in directory
         indexFile.open(textfiles.path(), std::ifstream::in);
         if (indexFile.is_open()) {
+            book_indexing* entry = new book_indexing;
             while (std::getline(indexFile, line)) {
                 if (!line.empty()) {
                     if (toUpperCase(line).find(query) != std::string::npos) {//if the query is contained in line
-
-                        book_indexing* entry = new book_indexing;
                         entry->title = line;
-
                         std::getline(indexFile, line); //get next line
                         if (!line.empty()) {
                             entry->ISBN = line;
@@ -31,6 +29,7 @@ std::vector <book_indexing> searchByTitle(std::string query) {
                     }
                 }
             }
+            delete entry; //prevent memory leak
         }
         indexFile.close();
     }
@@ -77,19 +76,18 @@ std::vector<book_indexing> getBookList(const std::string& searchType, const std:
 
     std::string line;
     if (textfile.is_open()) {
+        book_indexing* entry = new book_indexing;
         while (std::getline(textfile, line)) {
             if (!line.empty()) {
-                book_indexing* entry = new book_indexing;
                 entry->title = line;
-
                 std::getline(textfile, line); //get next line
-
                 if (!line.empty()) {
                     entry->ISBN = line;
                     bookList.push_back(*entry); //add entry to searchResult
                 }
             }
         }
+        delete entry; //prevent memory leak
     }
     textfile.close();
     return bookList;
