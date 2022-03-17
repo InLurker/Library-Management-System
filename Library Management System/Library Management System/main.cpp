@@ -41,7 +41,7 @@ int main() { //driver function
         cout << "2. Insert a new book" << endl;
         cout << "3. Return a book" << endl;
         cout << "4. Borrow a book" << endl;
-        cout << "5. Borrow a book" << endl;
+        cout << "5. Reserve a book" << endl;
         cout << "6. Adminstrator mode" << endl;
         cout << "7. Change password" << endl;
         cout << "8. Exit" << endl;
@@ -279,7 +279,7 @@ int main() { //driver function
                     cout << "Administrator Mode:" << endl;
                     cout << "1. Insert a book" << endl;
                     cout << "2. Modify a book" << endl;
-                    cout << "3. Modify a book" << endl;
+                    cout << "3. Delete a book" << endl;
                     cout << "4. Modify a borrower" << endl;
                     cout << "5. Delete a borrower" << endl;
                     cout << "6. Search a borrowing list" << endl;
