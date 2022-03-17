@@ -11,13 +11,14 @@
 
 using namespace std;
 
-void printBookData(const book &Book);
-string number_clear_formatting(const string& text);
-bool is_number(const string& str);
-void clearScreen();
-book searchBook();
+void printBookData(const book &Book); //display Book's data to end-user
+string number_clear_formatting(const string& text); //clear number formatting from strings of texts
+bool is_number(const string& str); //checks if string input is a number
+void clearScreen(); //clears CLI display
+book searchBook(); //retrieves book object from a selected searching method
 
-int main() {
+int main() { //driver function
+
     //initial setup
     filesystem::create_directories("./data");
     filesystem::create_directories("./index_files/alphabetical");
@@ -40,7 +41,7 @@ int main() {
         cout << "2. Insert a new book" << endl;
         cout << "3. Return a book" << endl;
         cout << "4. Borrow a book" << endl;
-        cout << "5. Reserve a book" << endl;
+        cout << "5. Borrow a book" << endl;
         cout << "6. Adminstrator mode" << endl;
         cout << "7. Change password" << endl;
         cout << "8. Exit" << endl;
@@ -48,7 +49,7 @@ int main() {
         cin >> action;
 
         switch (action) {
-        case 1: {
+        case 1: { //Search a book
             book BookData = searchBook();
             if (!BookData.title.empty()) {
                 printBookData(BookData);
@@ -131,7 +132,7 @@ int main() {
             }
         }
               break;
-        case 2: {
+        case 2: { //Insert a new book
             string toCheck;
             cin.ignore();
             cout << "Enter password: ";
@@ -201,7 +202,7 @@ int main() {
             else cout << "Wrong password!" << endl;
         }
               break;
-        case 3: {
+        case 3: { //Return a book
             book BookData = searchBook();
             if (BookData.title.empty()) {
                 cout << "Book doesn't exist in the database." << endl;
@@ -217,7 +218,7 @@ int main() {
             }
         }
             break;
-        case 4: {
+        case 4: { //Borrow a book
             book BookData = searchBook();
             if (BookData.status == "Available") {
                 string name, phoneNum;
@@ -240,7 +241,7 @@ int main() {
 
         }
             break;
-        case 5: {
+        case 5: { //Borrow a book
             book BookData = searchBook();
             if (BookData.title.empty())
                 cout << "Book doesn't exist in the database." << endl;
@@ -265,7 +266,7 @@ int main() {
             }
         }
             break;
-        case 6: {
+        case 6: { //Adminstrator mode
             string toCheck;
             cin.ignore();
             cout << "Enter password: ";
@@ -278,7 +279,7 @@ int main() {
                     cout << "Administrator Mode:" << endl;
                     cout << "1. Insert a book" << endl;
                     cout << "2. Modify a book" << endl;
-                    cout << "3. Delete a book" << endl;
+                    cout << "3. Modify a book" << endl;
                     cout << "4. Modify a borrower" << endl;
                     cout << "5. Delete a borrower" << endl;
                     cout << "6. Search a borrowing list" << endl;
@@ -288,7 +289,7 @@ int main() {
 
                     clearScreen();
                     switch (option) {
-                    case 1: {
+                    case 1: { //Insert a book
                         string bookDetails;
                         cout << "Enter book details." << endl;
                         cout << "ISBN: ";
@@ -351,7 +352,7 @@ int main() {
                         }
                     }
                           break;
-                    case 2: {
+                    case 2: { //Modify a book
                         book BookData = searchBook();
                         if (!BookData.title.empty()) {
                             int selectionNum = 0;
@@ -396,7 +397,7 @@ int main() {
                         else cout << "Book doesn't exist in our database." << endl;
                     }
                           break;
-                    case 3: {
+                    case 3: { //Modify a book
                         book BookData = searchBook();
                         if (!BookData.title.empty()) {
                             BookData.deleteBook();
@@ -407,7 +408,7 @@ int main() {
                         }
                     }
                           break;
-                    case 4: {
+                    case 4: { //Modify a borrower
                         book BookData = searchBook();
                         if (!BookData.title.empty()) {
                             if (BookData.title.empty()) {
@@ -475,7 +476,7 @@ int main() {
                         }
                     }
                           break;
-                    case 5: {
+                    case 5: { //Delete a borrower
                         book BookData = searchBook();
                         if (BookData.title.empty()) {
                             cout << "Book doesn't exist in our database." << endl;
@@ -528,7 +529,7 @@ int main() {
                         }
                     }
                           break;
-                    case 6: {
+                    case 6: { //Search a borrowing list
                         book BookData = searchBook();
                         if (!BookData.title.empty()) {
                             int i = 0;
@@ -542,7 +543,7 @@ int main() {
                         }
                     }
                         break;
-                    case 7:
+                    case 7: //Exit Administrator Mode
                         break;
                     default:
                         clearScreen();
@@ -554,7 +555,7 @@ int main() {
             else cout << "Wrong password!" << endl;
         }
             break;
-        case 7: {
+        case 7: { //Change password
             string password;
             cin.ignore();
             cout << "Current password: ";
@@ -570,7 +571,7 @@ int main() {
             else cout << "Wrong password!" << endl;
         }
             break;
-        case 8:
+        case 8: //Exit
             return 0;
             break;
         default:

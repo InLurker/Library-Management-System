@@ -18,17 +18,17 @@ public:
     std::string status;
     std::vector <std::string> borrower_record;
     std::string reserveName;
-    void addToDatabase();
-    void borrowBook(const std::string& name, const std::string& phoneNum);
-    void reserveBook(const std::string& name, const std::string& phoneNum);
-    void returnBook();
-    void modifyBorrower(int rowIndex, const std::string& name, const std::string& phoneNum);
-    void deleteBorrower(int rowIndex);
-    void modifyDetails(const std::string& detailType, const std::string& newDetail);
-    void deleteBook(); 
+    void addToDatabase(); //adds book record to database and its instances into index_files
+    void borrowBook(const std::string& name, const std::string& phoneNum); //receives string arg for name and phoneNum to add to borrower record
+    void reserveBook(const std::string& name, const std::string& phoneNum); //receives string arg for name and phoneNum to assign to reserveName
+    void returnBook(); //manages book status when being returned back to the library
+    void modifyBorrower(int rowIndex, const std::string& name, const std::string& phoneNum); //modify a certain borrwer's info with new arguments
+    void deleteBorrower(int rowIndex); //remove a certain borrower from the records
+    void modifyDetails(const std::string& detailType, const std::string& newDetail); //make a modification to book's data
+    void deleteBook(); //removes book from database and index_files
 private:
-    void updateDetails();
-    int binarySearchPosition(const std::vector<book_indexing>& vectorArray, const book_indexing* item) const;
+    void updateDetails(); //updates book's details in "data" directory
+    int binarySearchPosition(const std::vector<book_indexing>& vectorArray, const book_indexing* item) const; //returns an index position of book for insertion or removal
 };
 
 #endif

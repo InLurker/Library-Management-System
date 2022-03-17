@@ -8,6 +8,6 @@
 #include<fstream>
 #include"Book.h"
 
-book getDataList(const std::string& filename);
+book getDataList(const std::string& filename); //retrieves book object from database text file
 
 #endif
