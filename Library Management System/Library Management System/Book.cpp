@@ -324,12 +324,10 @@ int book::binarySearchPosition(const std::vector<book_indexing>& vectorArray, co
 		mid = left + (right - left) / 2;
 		if (newEntry->title == vectorArray[mid].title && newEntry->ISBN == vectorArray[mid].ISBN)
 			return mid;
-		if (newEntry->title > vectorArray[mid].title) {
+		else if (newEntry->title > vectorArray[mid].title)
 			left = mid + 1;
-		}
-		else {
+		else
 			right = mid - 1;
-		}
 	}
 	return left;
 }

@@ -241,7 +241,7 @@ int main() { //driver function
 
         }
             break;
-        case 5: { //Borrow a book
+        case 5: { //Reserve a book
             book BookData = searchBook();
             if (BookData.title.empty())
                 cout << "Book doesn't exist in the database." << endl;
@@ -397,7 +397,7 @@ int main() { //driver function
                         else cout << "Book doesn't exist in our database." << endl;
                     }
                           break;
-                    case 3: { //Modify a book
+                    case 3: { //Delete a book
                         book BookData = searchBook();
                         if (!BookData.title.empty()) {
                             BookData.deleteBook();
